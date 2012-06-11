@@ -9,6 +9,8 @@ from yafowil.utils import (
     get_resource_directory,
     get_javascripts,
     get_stylesheets,
+    get_examples,
+    get_example,
 )
 from webob import Request, Response
 from chameleon import PageTemplateLoader
@@ -50,8 +52,9 @@ def dispatch_resource(path, environ, start_response):
     return resource_response(filepath, environ, start_response, ct)
 
 
-def lookup_form(path):
-    pass
+def lookup_widget(path):
+    plugin_name = path.split('/')[0][10:]
+    exmple = get_example(plugin_name)
 
 
 def app(environ, start_response):
@@ -60,10 +63,12 @@ def app(environ, start_response):
     if path.startswith('++resource++'):
         return dispatch_resource(path, environ, start_response)
     if path.startswith('++widget++'):
-        form = lookup_form(path)
+        form = lookup_widget(path)
     else:
         form = None
     templates = PageTemplateLoader(dir)
     template = templates['main.pt']
-    response = Response(body=template(resources=resources, form=form))
+    response = Response(body=template(resources=resources,
+                                      form=form,
+                                      widgets=get_examples())
     return response(environ, start_response)
