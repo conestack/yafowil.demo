@@ -1,0 +1,22 @@
+<html>
+  <head>
+    <title>YAFOWIL - Demo</title>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js">
+    </script>
+    
+    <tal:js repeat="res resources['js']">
+      <script src="${res}"></script>
+    </tal:js>
+
+    <tal:css repeat="res resources['css']">
+      <link href="${res}" rel="stylesheet" type="text/css" media="all" />
+    </tal:css>
+    
+  </head>
+  <body>
+    
+    Hallo Welt
+    
+  </body>
+</html>

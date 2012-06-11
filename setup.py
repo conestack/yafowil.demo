@@ -34,6 +34,7 @@ setup(name='yafowil.demo',
         'setuptools',
         'Chameleon',
         'yafowil',
+        'yafowil.webob',
         'yafowil.yaml',
          # add-on widgets to document
         'yafowil.widget.richtext',

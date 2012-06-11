@@ -3,72 +3,67 @@ from yafowil import loader
 import yafowil.webob
 from yafowil.base import factory
 from yafowil.controller import Controller
-import yafowil.widget.image
 from yafowil.tests import fxml
+from yafowil.utils import (
+    get_plugin_names,
+    get_resource_directory,
+    get_javascripts,
+    get_stylesheets,
+)
 from webob import Request, Response
+from chameleon import PageTemplateLoader
 
 dir = os.path.dirname(__file__)
 
 
-def javascript_response(environ, start_response):
-    response = Response(content_type='text/javascript')
-    with open(os.path.join(dir, 'resources', 'widget.js')) as js:
-        response.write(js.read())
+def resource_response(path, environ, start_response, content_type):
+    response = Response(content_type=content_type)
+    with open(path) as file:
+        response.write(file.read())
     return response(environ, start_response)
 
 
-def css_response(environ, start_response):
-    response = Response(content_type='text/css')
-    with open(os.path.join(dir, 'resources', 'widget.css')) as js:
-        response.write(js.read())
-    return response(environ, start_response)
+def get_resources():
+    ret = dict(js=list(), css=list())
+    for plugin_name in get_plugin_names():
+        plugin_resources_dir = get_resource_directory(plugin_name)
+        resource_name = '++resource++%s' % plugin_name
+        if not (plugin_resources_dir):
+            continue
+        for js in get_javascripts(plugin_name):
+            ret['js'].append(resource_name + '/' + js)
+        for css in get_stylesheets(plugin_name):
+            ret['css'].append(resource_name + '/' + css)
+    return ret
 
 
-def img_response(environ, start_response):
-    response = Response(content_type='image/png')    
-    with open(os.path.join(dir, 'resources', 'images', 
-                           environ['PATH_INFO'][8:])) as img:
-        response.write(img.read())
-    return response(environ, start_response)
+def dispatch_resource(path, environ, start_response):
+    plugin_name = path.split('/')[0][12:]
+    plugin_resources_dir = get_resource_directory(plugin_name)
+    filepath = os.path.join(plugin_resources_dir, *path.split('/')[1:])
+    if path.endswith('js'):
+        ct = 'text/javascript'
+    if path.endswith('css'):
+        ct = 'text/css'
+    if path.endswith('png'):
+        ct = 'image/png'
+    return resource_response(filepath, environ, start_response, ct)
+
+
+def lookup_form(path):
+    pass
 
 
 def app(environ, start_response):
-    url = 'http://%s/' % environ['HTTP_HOST']
-    if environ['PATH_INFO'] == '/ywa.js':
-        return javascript_response(environ, start_response)
-    elif environ['PATH_INFO'] == '/ywa.css':
-        return css_response(environ, start_response)
-    elif environ['PATH_INFO'].startswith('/images/'):
-        return img_response(environ, start_response)
-    elif environ['PATH_INFO'] != '/':
-        response = Response(status=404)
-        return response(environ, start_response)
-    
-    form = factory(u'form', name='example', props={'action': url})
-    
-    # XXX:
-    
-    form['submit'] = factory(
-        'field:submit',
-        props={        
-            'label': 'submit',
-            'action': 'save',
-            'handler': lambda widget, data: None,
-            'next': lambda request: url})
-    
-    controller = Controller(form, Request(environ))
-    tag = controller.data.tag
-    jq = tag('script', ' ',
-             src='https://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.js',
-             type='text/javascript')
-    ywd = tag('script', ' ',
-              src='%sywa.js' % url,
-              type='text/javascript')
-    css = tag('style',
-              '@import url(%sywa.css)' % url,
-              type='text/css')
-    head = tag('head', jq, ywd, css)
-    h1 = tag('h1', 'YAFOWIL Widget Image Example')
-    body = tag('body', h1, controller.rendered)
-    response = Response(body=fxml(tag('html', head, body)))
+    path = environ['PATH_INFO'].strip('/')
+    resources = get_resources()
+    if path.startswith('++resource++'):
+        return dispatch_resource(path, environ, start_response)
+    if path.startswith('++widget++'):
+        form = lookup_form(path)
+    else:
+        form = None
+    templates = PageTemplateLoader(dir)
+    template = templates['main.pt']
+    response = Response(body=template(resources=resources, form=form))
     return response(environ, start_response)
