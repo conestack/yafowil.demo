@@ -22,8 +22,12 @@ def get_resource_dir():
     return os.path.join(os.path.dirname(__file__), 'resources')
 
 
-def get_js(thirdparty=True):
-    return ['jquery-1.7.2.min.js']
+def get_js():
+    return [{
+        'resource': 'jquery-1.7.2.min.js',
+        'thirdparty': False,
+        'order': 10,
+    }]
 
 
 def resource_response(path, environ, start_response, content_type):
@@ -34,16 +38,26 @@ def resource_response(path, environ, start_response, content_type):
 
 
 def get_resources():
-    ret = dict(js=list(), css=list())
+    all_js = list()
+    all_css = list()
     for plugin_name in get_plugin_names():
         plugin_resources_dir = get_resource_directory(plugin_name)
         resource_name = '++resource++%s' % plugin_name
         if not (plugin_resources_dir):
             continue
         for js in get_javascripts(plugin_name):
-            ret['js'].append(resource_name + '/' + js)
+            js['resource'] = resource_name + '/' + js['resource']
+            all_js.append(js)
         for css in get_stylesheets(plugin_name):
-            ret['css'].append(resource_name + '/' + css)
+            css['resource'] = resource_name + '/' + css['resource']
+            all_css.append(css)
+    ret = dict(js=list(), css=list())
+    all_js = sorted(all_js, key=lambda x: x['order'])
+    all_css = sorted(all_css, key=lambda x: x['order'])
+    for js in all_js:
+        ret['js'].append(js['resource'])
+    for css in all_css:
+        ret['css'].append(css['resource'])
     return ret
 
 
