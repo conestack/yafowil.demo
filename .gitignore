@@ -5,3 +5,6 @@ bin/
 devsrc/
 eggs/
 parts/
+.installed.cfg
+develop-eggs/
+src/yafowil.demo.egg-info/
