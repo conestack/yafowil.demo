@@ -50,4 +50,9 @@ setup(name='yafowil.demo',
       extras_require = dict(
           test=tests_require,
       ),
+      entry_points="""
+      [yafowil.plugin]
+      resourcedir = yafowil.demo:get_resource_dir
+      javascripts = yafowil.demo:get_js
+      """,
 )

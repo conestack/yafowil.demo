@@ -2,21 +2,37 @@
   <head>
     <title>YAFOWIL - Demo</title>
     
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js">
-    </script>
-    
     <tal:js repeat="res resources['js']">
-      <script src="${res}"></script>
+      <script src="${'/' + res}"></script>
     </tal:js>
 
     <tal:css repeat="res resources['css']">
-      <link href="${res}" rel="stylesheet" type="text/css" media="all" />
+      <link href="${'/' + res}" rel="stylesheet" type="text/css" media="all" />
     </tal:css>
     
   </head>
   <body>
     
-    Hallo Welt
+    <div class="tabbable tabs-left">
+      <ul class="nav nav-tabs">
+        <tal:li repeat="widget widgets">
+          <li class="${widget['plugin_name'] == plugin_name and 'active' or None}">
+            <a href="${'/++widget++' + widget['plugin_name'] + '/index.html'}"
+               tal:content="plugin_name">
+              plugin name
+            </a>
+          </li>
+        </tal:li>
+      </ul>
+      <div class="tab-content"
+           tal:condition="form">
+        <tal:form replace="structure form" />
+      </div>
+      <div class="tab-content"
+           tal:condition="not form">
+        <h1>YAFOWIL Demo page</h1>
+      </div>
+    </div>
     
   </body>
 </html>
