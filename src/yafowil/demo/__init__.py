@@ -104,6 +104,7 @@ def render_form(widget, environ, plugin_name):
         'field:submit',
         props={
             'label': 'submit',
+            'submit.class': 'btn btn-primary',
             'action': 'save',
             'handler': lambda widget, data: None})
     controller = Controller(form, Request(environ))
