@@ -17,6 +17,14 @@ from chameleon import PageTemplateLoader
 
 dir = os.path.dirname(__file__)
 
+CTMAP = {
+    '.js': 'text/javascript',
+    '.css': 'text/css',
+    '.png': 'image/png',
+    '.gif': 'image/gif',
+    '.jpg': 'image/jpeg',
+}
+
 
 def get_resource_dir():
     return os.path.join(os.path.dirname(__file__), 'resources')
@@ -25,6 +33,18 @@ def get_resource_dir():
 def get_js():
     return [{
         'resource': 'jquery-1.7.2.min.js',
+        'thirdparty': False,
+        'order': 10,
+    }, {
+        'resource': 'jquery-ui-1.8.18.min.js',
+        'thirdparty': False,
+        'order': 11,
+    }]
+
+
+def get_css():
+    return [{
+        'resource': 'jquery-1.7.2.min.css',
         'thirdparty': False,
         'order': 10,
     }]
@@ -65,12 +85,11 @@ def dispatch_resource(path, environ, start_response):
     plugin_name = path.split('/')[0][12:]
     plugin_resources_dir = get_resource_directory(plugin_name)
     filepath = os.path.join(plugin_resources_dir, *path.split('/')[1:])
-    if path.endswith('js'):
-        ct = 'text/javascript'
-    if path.endswith('css'):
-        ct = 'text/css'
-    if path.endswith('png'):
-        ct = 'image/png'
+    ct = 'text/plain'
+    for key in CTMAP:
+        if path.endswith(key):
+            ct = CTMAP[key]
+            break
     return resource_response(filepath, environ, start_response, ct)
 
 
@@ -101,7 +120,7 @@ def app(environ, start_response):
         plugin_name = splitted[0][10:]
         example = get_example(plugin_name)
         if splitted[1] != 'index.html':
-            return example['routes'][splitted[1]]
+            return example['routes'][splitted[1]](environ, start_response)
         form = render_form(example['widget'], environ, plugin_name)
     else:
         form = None
