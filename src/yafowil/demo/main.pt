@@ -15,7 +15,9 @@
   
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
-        <div class="container"></div>
+        <div class="container">
+          <a href="/" class="brand">YAFOWIL DEMO</a>
+        </div>
       </div>
     </div>
   
