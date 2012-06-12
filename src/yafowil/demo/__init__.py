@@ -44,7 +44,7 @@ def get_js():
 
 def get_css():
     return [{
-        'resource': 'jquery-1.7.2.min.css',
+        'resource': 'jquery-ui-1.8.18.css',
         'thirdparty': False,
         'order': 10,
     }]

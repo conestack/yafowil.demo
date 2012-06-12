@@ -55,5 +55,6 @@ setup(name='yafowil.demo',
       [yafowil.plugin]
       resourcedir = yafowil.demo:get_resource_dir
       javascripts = yafowil.demo:get_js
+      stylesheets = yafowil.demo:get_css
       """,
 )
