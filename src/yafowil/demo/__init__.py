@@ -104,7 +104,7 @@ def render_forms(example, environ, plugin_name):
         widget = part['widget']
         form = factory(
             u'form',
-            name=plugin_name,
+            name=widget.name,
             props={
                 'action': '/++widget++%s/index.html' % plugin_name})
         form[widget.name] = widget
@@ -150,6 +150,6 @@ def app(environ, start_response):
     template = templates['main.pt']
     response = Response(body=template(resources=resources,
                                 forms=forms,
-                                example_names=get_example_names(),
+                                example_names=sorted(get_example_names()),
                                 current_name=plugin_name))
     return response(environ, start_response)
