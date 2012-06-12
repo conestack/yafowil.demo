@@ -38,7 +38,7 @@ setup(name='yafowil.demo',
         'yafowil.yaml',
          # add-on widgets to document
         'yafowil.widget.richtext',
-        #'yafowil.widget.wysihtml5',
+        'yafowil.widget.wysihtml5',
         'yafowil.widget.datetime',   
         'yafowil.widget.array',
         'yafowil.widget.dict',
@@ -55,5 +55,6 @@ setup(name='yafowil.demo',
       [yafowil.plugin]
       resourcedir = yafowil.demo:get_resource_dir
       javascripts = yafowil.demo:get_js
+      stylesheets = yafowil.demo:get_css
       """,
 )
