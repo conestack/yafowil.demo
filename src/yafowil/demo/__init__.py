@@ -1,19 +1,22 @@
 import os
+import lxml.html
+import docutils.core
+from webob import Request, Response
+from chameleon import PageTemplateLoader
 from yafowil import loader
 import yafowil.webob
 from yafowil.base import factory
 from yafowil.controller import Controller
 from yafowil.tests import fxml
 from yafowil.utils import (
+    Tag,
     get_plugin_names,
     get_resource_directory,
     get_javascripts,
     get_stylesheets,
-    get_examples,
+    get_example_names,
     get_example,
 )
-from webob import Request, Response
-from chameleon import PageTemplateLoader
 
 dir = os.path.dirname(__file__)
 
@@ -93,23 +96,39 @@ def dispatch_resource(path, environ, start_response):
     return resource_response(filepath, environ, start_response, ct)
 
 
-def render_form(widget, environ, plugin_name):
-    form = factory(
-        u'form',
-        name=plugin_name,
-        props={
-            'action': '/++widget++%s/index.html' % plugin_name})
-    form[widget.name] = widget
-    form['submit'] = factory(
-        'field:submit',
-        props={
-            'label': 'submit',
-            'submit.class': 'btn btn-primary',
-            'action': 'save',
-            'handler': lambda widget, data: None})
-    controller = Controller(form, Request(environ))
-    return controller.rendered
+def render_forms(example, environ, plugin_name):
+    result = []
+    for part in example:
+        record = {}
+        widget = part['widget']
+        form = factory(
+            u'form',
+            name=plugin_name,
+            props={
+                'action': '/++widget++%s/index.html' % plugin_name})
+        form[widget.name] = widget
+        form['submit'] = factory(
+            'field:submit',
+            props={
+                'label': 'submit',
+                'submit.class': 'btn btn-primary',
+                'action': 'save',
+                'handler': lambda widget, data: None})
+        controller = Controller(form, Request(environ))
+        record['form'] = controller.rendered
+        doc_html = docutils.core.publish_string(part['doc'],
+                                                writer_name='html')
+        doc_html = lxml.html.document_fromstring(doc_html)
+        doc_html = doc_html.find_class('document')[0]
+        record['doc'] = lxml.html.tostring(doc_html)
+        result.append(record)
+    return result
 
+def execute_route(example, route, environ, start_response):
+    for part in example:
+        if 'routes' in part and route in part['routes']:
+            return part['routes'][route](environ, start_response)
+    raise ValueError('No route to: %s' % environ['PATH_INFO'])
 
 def app(environ, start_response):
     path = environ['PATH_INFO'].strip('/')
@@ -121,15 +140,15 @@ def app(environ, start_response):
         plugin_name = splitted[0][10:]
         example = get_example(plugin_name)
         if splitted[1] != 'index.html':
-            return example['routes'][splitted[1]](environ, start_response)
-        form = render_form(example['widget'], environ, plugin_name)
+            return execute_route(example, splitted[1], environ, start_response)
+        forms = render_forms(example, environ, plugin_name)
     else:
-        form = None
+        forms = None
         plugin_name = None
     templates = PageTemplateLoader(dir)
     template = templates['main.pt']
     response = Response(body=template(resources=resources,
-                                      form=form,
-                                      widgets=get_examples(),
-                                      plugin_name=plugin_name))
+                                forms=forms,
+                                example_names=get_example_names(),
+                                current_name=plugin_name))
     return response(environ, start_response)

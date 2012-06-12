@@ -25,22 +25,26 @@
     
       <div class="tabbable tabs-left">
         <ul class="nav nav-tabs">
-          <tal:li repeat="widget widgets">
-            <li class="${widget['plugin_name'] == plugin_name and 'active' or None}">
-              <a href="${'/++widget++' + widget['plugin_name'] + '/index.html'}"
-                 tal:content="widget['plugin_name']">
+          <tal:li repeat="example_name example_names">
+            <li class="${current_name == example_name and 'active' or None}">
+              <a href="${'/++widget++' + example_name + '/index.html'}"
+                 tal:content="example_name">
                 plugin name
               </a>
             </li>
           </tal:li>
         </ul>
         <div class="tab-content"
-             tal:condition="form">
-          <h1 tal:content="plugin_name">Plugin name</h1>
-          <tal:form replace="structure form" />
+             tal:condition="forms">
+          <h1 tal:content="current_name">Plugin name</h1>
+          <tal:loop tal:repeat="part forms">
+            <tal:part replace="structure part['doc']" />
+            <tal:part replace="structure part['form']" />
+          </tal:loop>
+          
         </div>
         <div class="tab-content"
-             tal:condition="not form">
+             tal:condition="not forms">
           <h1>YAFOWIL Demo page</h1>
         </div>
       </div>
