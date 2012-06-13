@@ -74,10 +74,12 @@ def get_resources():
         if not (plugin_resources_dir):
             continue
         for js in get_javascripts(plugin_name):
-            js['resource'] = resource_name + '/' + js['resource']
+            if not js['resource'].startswith('http'):
+                js['resource'] = resource_name + '/' + js['resource']
             all_js.append(js)
         for css in get_stylesheets(plugin_name):
-            css['resource'] = resource_name + '/' + css['resource']
+            if not css['resource'].startswith('http'):
+                css['resource'] = resource_name + '/' + css['resource']
             all_css.append(css)
     ret = dict(js=list(), css=list())
     all_js = sorted(all_js, key=lambda x: x['order'])
