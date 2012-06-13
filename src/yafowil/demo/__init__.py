@@ -51,6 +51,10 @@ def get_css():
         'resource': 'jquery-ui-1.8.16.bootstrap.css',
         'thirdparty': False,
         'order': 10,
+    }, {
+        'resource': 'yafowil.demo.css',
+        'thirdparty': False,
+        'order': 20,
     }]
 
 

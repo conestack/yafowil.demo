@@ -23,10 +23,10 @@
            title="Fork ${current_name or 'yafowil.demo'} on GitHub">
     </a>
     
-    <div class="navbar navbar-fixed-top">
+    <div id="navbar" class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <a href="/" class="brand">YAFOWIL DEMO</a>
+          <a href="/" class="brand">YAFOWIL Demo</a>
         </div>
       </div>
     </div>
@@ -54,6 +54,16 @@
         <div class="tab-content"
              tal:condition="not forms">
           <h1>YAFOWIL Demo page</h1>
+          <p>Write me</p>
+          <form class="well">
+		    <label>Label name</label>
+		    <input type="text" class="span3" placeholder="Type something…">
+		    <span class="help-block">Example block-level help text here.</span>
+		    <label class="checkbox">
+		    <input type="checkbox"> Check me out
+		    </label>
+		    <button type="submit" class="btn">Submit</button>
+           </form>
         </div>
       </div>
     
