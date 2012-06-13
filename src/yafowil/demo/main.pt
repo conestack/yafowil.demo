@@ -65,17 +65,15 @@
         </div>
         <div class="tab-content"
              tal:condition="not forms">
-          <h1>YAFOWIL Demo page</h1>
-          <p>Write me</p>
-          <form class="well">
-		    <label>Label name</label>
-		    <input type="text" class="span3" placeholder="Type something…">
-		    <span class="help-block">Example block-level help text here.</span>
-		    <label class="checkbox">
-		    <input type="checkbox"> Check me out
-		    </label>
-		    <button type="submit" class="btn">Submit</button>
-           </form>
+          <img class="yafowil-logo"
+               src="/++resource++yafowil.demo/yafowil.png" 
+               alt="yafowil logo" 
+               title="yafowil - declarative forms" 
+               height="211"
+               width="420"
+               />
+          <h1>Demo page</h1>
+          <p>Here all major widgets are shown.</p>
         </div>
       </div>
 
