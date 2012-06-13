@@ -113,7 +113,7 @@ def render_forms(example, environ, plugin_name):
                 'action': '/++widget++%s/index.html' % plugin_name})
         form[widget.name] = widget
         form['submit'] = factory(
-            'field:submit',
+            'submit',
             props={
                 'label': 'submit',
                 'submit.class': 'btn btn-primary',
