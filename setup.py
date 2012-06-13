@@ -33,6 +33,7 @@ setup(name='yafowil.demo',
       install_requires=[
         'setuptools',
         'Chameleon',
+        'docutils',
         'yafowil',
         'yafowil.webob',
         'yafowil.yaml',
