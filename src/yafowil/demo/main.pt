@@ -70,7 +70,8 @@
                    tal:content="example_name">
                   plugin name
                 </a>
-                <ul class="nav nav-list">
+                <ul class="nav nav-list"
+                    tal:condition="len(sections) > 1">
                   <li tal:repeat="section sections">
                     <a href="${'#' + section['id']}"
                        tal:content="section['title']">title</a>
