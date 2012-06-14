@@ -1,5 +1,6 @@
 import os
 import lxml.html
+import lxml.etree
 import docutils.core
 from webob import Request, Response
 from chameleon import PageTemplateLoader
@@ -131,6 +132,7 @@ def render_forms(example, environ, plugin_name):
                                                 writer_name='html')
         doc_html = lxml.html.document_fromstring(doc_html)
         doc_html = doc_html.find_class('document')[0]
+        doc_html.insert(0, lxml.etree.Element('a', name=widget.name))
         record['doc'] = lxml.html.tostring(doc_html)
         result.append(record)
     return result
