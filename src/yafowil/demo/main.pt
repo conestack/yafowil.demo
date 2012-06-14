@@ -1,6 +1,7 @@
 <html>
   <head>
-    <title>YAFOWIL - Demo</title>
+    <title>YAFOWIL Examples - ${current_name or 'Main'}</title>    
+    <link rel="shortcut icon" href="/favicon.ico" />
 
     <tal:js repeat="res resources['js']">
       <script tal:condition="res.startswith('http')"
