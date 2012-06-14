@@ -65,10 +65,13 @@ def resource_response(path, environ, start_response, content_type):
     return response(environ, start_response)
 
 
-def get_resources():
+def get_resources(current_plugin_name=None):
     all_js = list()
     all_css = list()
     for plugin_name in get_plugin_names():
+        if plugin_name not in ['yafowil.demo', 'yafowil.loader',
+                               current_plugin_name]:
+            continue
         plugin_resources_dir = get_resource_directory(plugin_name)
         resource_name = '++resource++%s' % plugin_name
         if not (plugin_resources_dir):
@@ -139,12 +142,12 @@ def execute_route(example, route, environ, start_response):
 
 def app(environ, start_response):
     path = environ['PATH_INFO'].strip('/')
-    resources = get_resources()
     if path.startswith('++resource++'):
         return dispatch_resource(path, environ, start_response)
     if path.startswith('++widget++'):
         splitted = path.split('/')
         plugin_name = splitted[0][10:]
+        resources = get_resources(plugin_name)
         example = get_example(plugin_name)
         if splitted[1] != 'index.html':
             return execute_route(example, splitted[1], environ, start_response)
@@ -152,6 +155,7 @@ def app(environ, start_response):
     else:
         forms = None
         plugin_name = None
+        resources = get_resources()
     templates = PageTemplateLoader(dir)
     template = templates['main.pt']
     response = Response(body=template(resources=resources,
