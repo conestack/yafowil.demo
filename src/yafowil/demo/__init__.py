@@ -137,11 +137,13 @@ def render_forms(example, environ, plugin_name):
         result.append(record)
     return result
 
+
 def execute_route(example, route, environ, start_response):
     for part in example:
         if 'routes' in part and route in part['routes']:
             return part['routes'][route](environ, start_response)
     raise ValueError('No route to: %s' % environ['PATH_INFO'])
+
 
 def app(environ, start_response):
     path = environ['PATH_INFO'].strip('/')
@@ -157,15 +159,23 @@ def app(environ, start_response):
         example = get_example(plugin_name)
         if splitted[1] != 'index.html':
             return execute_route(example, splitted[1], environ, start_response)
+        sections = list()
+        for section in example:
+            sections.append({
+                'id': section['widget'].name,
+                'title': section.get('title', section['widget'].name),
+            })
         forms = render_forms(example, environ, plugin_name)
     else:
-        forms = None
         plugin_name = None
         resources = get_resources()
+        sections = list()
+        forms = None
     templates = PageTemplateLoader(dir)
     template = templates['main.pt']
-    response = Response(body=template(resources=resources,
-                                forms=forms,
-                                example_names=sorted(get_example_names()),
-                                current_name=plugin_name))
-    return response(environ, start_response)
+    body = template(resources=resources,
+                    forms=forms,
+                    example_names=sorted(get_example_names()),
+                    sections=sections,
+                    current_name=plugin_name)
+    return Response(body=body)(environ, start_response)

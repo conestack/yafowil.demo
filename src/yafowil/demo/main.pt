@@ -71,8 +71,9 @@
                   plugin name
                 </a>
                 <ul class="nav nav-list">
-                  <li>
-                    <a href="#foo">foo</a>
+                  <li tal:repeat="section sections">
+                    <a href="${'#' + section['id']}"
+                       tal:content="section['title']">title</a>
                   </li>
                 </ul>
               </li>
