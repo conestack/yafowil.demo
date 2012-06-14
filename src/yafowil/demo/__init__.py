@@ -26,6 +26,7 @@ CTMAP = {
     '.png': 'image/png',
     '.gif': 'image/gif',
     '.jpg': 'image/jpeg',
+    '.ico': 'image/x-icon',
 }
 
 
@@ -142,6 +143,9 @@ def execute_route(example, route, environ, start_response):
 
 def app(environ, start_response):
     path = environ['PATH_INFO'].strip('/')
+    if path == "favicon.ico":
+        return dispatch_resource('++resource++yafowil.demo/favicon.ico',
+                                 environ, start_response)
     if path.startswith('++resource++'):
         return dispatch_resource(path, environ, start_response)
     if path.startswith('++widget++'):
