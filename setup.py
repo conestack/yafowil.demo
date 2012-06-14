@@ -32,6 +32,7 @@ setup(name='yafowil.demo',
       zip_safe=True,
       install_requires=[
         'setuptools',
+        'sphinx',
         'Chameleon',
         'docutils',
         'yafowil',

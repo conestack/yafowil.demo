@@ -2,6 +2,7 @@ import os
 import lxml.html
 import lxml.etree
 import docutils.core
+import sphinx.directives
 from webob import Request, Response
 from chameleon import PageTemplateLoader
 from yafowil import loader
@@ -128,8 +129,7 @@ def render_forms(example, environ, plugin_name):
                 'handler': lambda widget, data: None})
         controller = Controller(form, Request(environ))
         record['form'] = controller.rendered
-        doc_html = docutils.core.publish_string(part['doc'],
-                                                writer_name='html')
+        doc_html = docutils.core.publish_string(part['doc'], writer_name='html')
         doc_html = lxml.html.document_fromstring(doc_html)
         doc_html = doc_html.find_class('document')[0]
         doc_html.insert(0, lxml.etree.Element('a', name=widget.name))
