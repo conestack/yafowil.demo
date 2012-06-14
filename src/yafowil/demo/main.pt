@@ -49,44 +49,62 @@
     </div>
 
     <div class="container content-wrapper">
-
-      <div class="tabbable tabs-left">
-        <ul class="nav nav-tabs">
-          <li>&nbsp;</li>
-          <tal:li repeat="example_name example_names">
-            <li class="${current_name == example_name and 'active' or None}">
-              <a href="${'/++widget++' + example_name + '/index.html'}"
-                 tal:content="example_name">
-                plugin name
-              </a>
+      
+      <div class="row">
+        <div class="span4">
+          <ul class="nav nav-list well">
+            <li class="nav-header">
+              Packages
             </li>
-          </tal:li>
-        </ul>
-        <div class="tab-content"
-             tal:condition="forms">
-          <div class="example-form" tal:repeat="part forms">
-            <tal:part replace="structure part['doc']" />
-            <tal:part replace="structure part['form']" />
+            <tal:li repeat="example_name example_names">
+              <li tal:condition="current_name != example_name">
+                <a href="${'/++widget++' + example_name + '/index.html'}"
+                   tal:content="example_name">
+                  plugin name
+                </a>
+              </li>
+              <li class="active"
+                  tal:condition="current_name == example_name">
+                <a href="${'/++widget++' + example_name + '/index.html'}"
+                   tal:content="example_name">
+                  plugin name
+                </a>
+                <ul class="nav nav-list">
+                  <li>
+                    <a href="#foo">foo</a>
+                  </li>
+                </ul>
+              </li>
+            </tal:li>
+          </ul>
+        </div>
+      
+        <div class="span8">
+          <div tal:condition="forms">
+            <div class="example-form" tal:repeat="part forms">
+              <tal:part replace="structure part['doc']" />
+              <tal:part replace="structure part['form']" />
+            </div>
+          </div>
+          <div tal:condition="not forms">
+            <img class="yafowil-logo"
+                 src="/++resource++yafowil.demo/yafowil.png" 
+                 alt="yafowil logo" 
+                 title="yafowil - declarative forms" 
+                 height="211"
+                 width="420"
+                 />
+            <p>
+              <strong>
+                Collection of YAFOWIL core and addon widget examples
+              </strong>
+            </p>
+            <p>
+              This page is brought to you by aliens
+            </p>
           </div>
         </div>
-        <div class="tab-content"
-             tal:condition="not forms">
-          <img class="yafowil-logo"
-               src="/++resource++yafowil.demo/yafowil.png" 
-               alt="yafowil logo" 
-               title="yafowil - declarative forms" 
-               height="211"
-               width="420"
-               />
-          <p>
-            <strong>
-              Collection of YAFOWIL core and addon widget examples
-            </strong>
-          </p>
-          <p>
-            This page is brought to you by aliens
-          </p>
-        </div>
+      
       </div>
       
       <div class="footer">
