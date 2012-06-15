@@ -2,7 +2,13 @@ import os
 import lxml.html
 import lxml.etree
 import docutils.core
+from docutils import nodes
+from docutils.writers.html4css1 import (
+    Writer,
+    HTMLTranslator,
+)
 import sphinx.directives
+from sphinx.highlighting import PygmentsBridge
 from webob import Request, Response
 from chameleon import PageTemplateLoader
 from yafowil import loader
@@ -30,6 +36,56 @@ CTMAP = {
     '.jpg': 'image/jpeg',
     '.ico': 'image/x-icon',
 }
+
+
+def python_highlighter():
+    return PygmentsBridge('html', 'sphinx', False)
+
+
+class DocTranslator(HTMLTranslator):
+    
+    def __init__(self, *args, **kwds):
+        HTMLTranslator.__init__(self, *args, **kwds)
+        self.highlightlang = 'python'
+        self.highlightlinenothreshold = 0
+        self.highlighter = python_highlighter()
+    
+    def visit_literal_block(self, node):
+        if node.rawsource != node.astext():
+            # most probably a parsed-literal block -- don't highlight
+            return HTMLTranslator.visit_literal_block(self, node)
+        lang = self.highlightlang
+        linenos = node.rawsource.count('\n') >= \
+                  self.highlightlinenothreshold - 1
+        highlight_args = node.get('highlight_args', {})
+        if node.has_key('language'):
+            # code-block directives
+            lang = node['language']
+            highlight_args['force'] = True
+        if node.has_key('linenos'):
+            linenos = node['linenos']
+        def warner(msg):
+            print 'Warning: %s - %s ' % (msg, node.line)
+        highlighted = self.highlighter.highlight_block(
+            node.rawsource, lang, warn=warner, linenos=linenos,
+            **highlight_args)
+        starttag = self.starttag(node, 'div', suffix='',
+                                 CLASS='highlight-%s' % lang)
+        self.body.append(starttag + highlighted + '</div>\n')
+        raise nodes.SkipNode
+
+
+class DocWriter(Writer):
+    
+    def __init__(self):
+        Writer.__init__(self)
+        self.translator_class = DocTranslator
+
+
+def pygments_styles(environ, start_response):
+    response = Response(content_type='text/css')
+    response.write(python_highlighter().get_stylesheet())
+    return response(environ, start_response)
 
 
 def get_resource_dir():
@@ -129,7 +185,7 @@ def render_forms(example, environ, plugin_name):
                 'handler': lambda widget, data: None})
         controller = Controller(form, Request(environ))
         record['form'] = controller.rendered
-        doc_html = docutils.core.publish_string(part['doc'], writer_name='html')
+        doc_html = docutils.core.publish_string(part['doc'], writer=DocWriter())
         doc_html = lxml.html.document_fromstring(doc_html)
         doc_html = doc_html.find_class('document')[0]
         doc_html.insert(0, lxml.etree.Element('a', name=widget.name))
@@ -147,9 +203,11 @@ def execute_route(example, route, environ, start_response):
 
 def app(environ, start_response):
     path = environ['PATH_INFO'].strip('/')
-    if path == "favicon.ico":
+    if path == 'favicon.ico':
         return dispatch_resource('++resource++yafowil.demo/favicon.ico',
                                  environ, start_response)
+    if path ==  'pygments.css':
+        return pygments_styles(environ, start_response)
     if path.startswith('++resource++'):
         return dispatch_resource(path, environ, start_response)
     if path.startswith('++widget++'):
