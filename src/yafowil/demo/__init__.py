@@ -178,16 +178,15 @@ def render_forms(example, environ, plugin_name):
         record = {}
         widget = part['widget']
         form = factory(
-            u'form',
+            u'#form',
             name=widget.name,
             props={
                 'action': '/++widget++%s/index.html' % plugin_name})
         form[widget.name] = widget
         form['submit'] = factory(
-            'submit',
+            '#button',
             props={
                 'label': 'submit',
-                'submit.class': 'btn btn-primary',
                 'action': 'save',
                 'handler': lambda widget, data: None})
         controller = Controller(form, Request(environ))
