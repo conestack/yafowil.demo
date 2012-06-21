@@ -124,12 +124,18 @@ def resource_response(path, environ, start_response, content_type):
     return response(environ, start_response)
 
 
+RESOURCE_DELIVERY_WHITELIST = [
+     'yafowil.demo',
+     'yafowil.loader',
+     'yafowil.bootstrap',
+]
+
 def get_resources(current_plugin_name=None):
     all_js = list()
     all_css = list()
     for plugin_name in get_plugin_names():
-        if plugin_name not in ['yafowil.demo', 'yafowil.loader',
-                               current_plugin_name]:
+        whitelist = [current_plugin_name] + RESOURCE_DELIVERY_WHITELIST
+        if plugin_name not in whitelist:
             continue
         plugin_resources_dir = get_resource_directory(plugin_name)
         resource_name = '++resource++%s' % plugin_name

@@ -38,6 +38,7 @@ setup(name='yafowil.demo',
         'yafowil',
         'yafowil.webob',
         'yafowil.yaml',
+        'yafowil.bootstrap',
          # add-on widgets to document
         'yafowil.widget.alohaeditor',
         'yafowil.widget.array',
