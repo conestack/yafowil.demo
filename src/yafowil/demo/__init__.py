@@ -27,7 +27,7 @@ from yafowil.utils import (
     get_example,
 )
 
-dir = os.path.dirname(__file__)
+curdir = os.path.dirname(__file__)
 
 CTMAP = {
     '.js': 'text/javascript',
@@ -44,13 +44,13 @@ def python_highlighter():
 
 
 class DocTranslator(HTMLTranslator):
-    
+
     def __init__(self, *args, **kwds):
         HTMLTranslator.__init__(self, *args, **kwds)
         self.highlightlang = 'python'
         self.highlightlinenothreshold = sys.maxint
         self.highlighter = python_highlighter()
-    
+
     def visit_literal_block(self, node):
         if node.rawsource != node.astext():
             # most probably a parsed-literal block -- don't highlight
@@ -65,6 +65,7 @@ class DocTranslator(HTMLTranslator):
             highlight_args['force'] = True
         if node.has_key('linenos'):
             linenos = node['linenos']
+
         def warner(msg):
             print 'Warning: %s - %s ' % (msg, node.line)
         highlighted = self.highlighter.highlight_block(
@@ -77,7 +78,7 @@ class DocTranslator(HTMLTranslator):
 
 
 class DocWriter(Writer):
-    
+
     def __init__(self):
         Writer.__init__(self)
         self.translator_class = DocTranslator
@@ -90,7 +91,7 @@ def pygments_styles(environ, start_response):
 
 
 def get_resource_dir():
-    return os.path.join(os.path.dirname(__file__), 'resources')
+    return os.path.join(curdir, 'resources')
 
 
 def get_js():
@@ -120,8 +121,8 @@ def get_css():
 
 def resource_response(path, environ, start_response, content_type):
     response = Response(content_type=content_type)
-    with open(path) as file:
-        response.write(file.read())
+    with open(path) as fd:
+        response.write(fd.read())
     return response(environ, start_response)
 
 
@@ -130,6 +131,7 @@ RESOURCE_DELIVERY_WHITELIST = [
      'yafowil.loader',
      'yafowil.bootstrap',
 ]
+
 
 def get_resources(current_plugin_name=None):
     all_js = list()
@@ -198,7 +200,8 @@ def render_forms(example, environ, plugin_name):
                 'handler': lambda widget, data: None})
         controller = Controller(form, Request(environ))
         record['form'] = controller.rendered
-        doc_html = docutils.core.publish_string(part['doc'], writer=DocWriter())
+        doc_html = docutils.core.publish_string(part['doc'],
+                                                writer=DocWriter())
         doc_html = lxml.html.document_fromstring(doc_html)
         doc_html = doc_html.find_class('document')[0]
         doc_html.insert(0, lxml.etree.Element('a', name=widget.name))
@@ -219,7 +222,7 @@ def app(environ, start_response):
     if path == 'favicon.ico':
         return dispatch_resource('++resource++yafowil.demo/favicon.ico',
                                  environ, start_response)
-    if path ==  'pygments.css':
+    if path == 'pygments.css':
         return pygments_styles(environ, start_response)
     if path.startswith('++resource++'):
         return dispatch_resource(path, environ, start_response)
@@ -242,7 +245,7 @@ def app(environ, start_response):
         resources = get_resources()
         sections = list()
         forms = None
-    templates = PageTemplateLoader(dir)
+    templates = PageTemplateLoader(curdir)
     template = templates['main.pt']
     body = template(resources=resources,
                     forms=forms,
