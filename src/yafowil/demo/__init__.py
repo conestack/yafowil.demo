@@ -10,6 +10,7 @@ from docutils.writers.html4css1 import (
 )
 import sphinx.directives
 from sphinx.highlighting import PygmentsBridge
+from wsgiref.util import request_uri
 from webob import Request, Response
 from chameleon import PageTemplateLoader
 from yafowil import loader
@@ -213,7 +214,12 @@ def render_forms(example, environ, plugin_name):
 def execute_route(example, route, environ, start_response):
     for part in example:
         if 'routes' in part and route in part['routes']:
-            return part['routes'][route](environ, start_response)
+            url = request_uri(environ)
+            result = part['routes'][route](url)
+            # XXX todo: set headers generic
+            response = Response(content_type='application/json',
+                                body=result['body'])
+            return response(environ, start_response)
     raise ValueError('No route to: %s' % environ['PATH_INFO'])
 
 
