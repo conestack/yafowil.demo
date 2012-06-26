@@ -1,6 +1,5 @@
 import os
 import sys
-import copy
 import lxml.html
 import lxml.etree
 import docutils.core
@@ -114,12 +113,10 @@ def get_resources(current_plugin_name=None):
             continue
         resource_name = '++resource++%s' % plugin_name
         for js in resources['js']:
-            js = copy.deepcopy(js)
             if not js['resource'].startswith('http'):
                 js['resource'] = resource_name + '/' + js['resource']
             all_js.append(js)
         for css in resources['css']:
-            css = copy.deepcopy(css)
             if not css['resource'].startswith('http'):
                 css['resource'] = resource_name + '/' + css['resource']
             all_css.append(css)
