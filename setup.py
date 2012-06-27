@@ -59,8 +59,5 @@ setup(name='yafowil.demo',
       entry_points="""
       [yafowil.plugin]
       register = yafowil.demo.loader:register
-      resourcedir = yafowil.demo.loader:get_resource_dir
-      javascripts = yafowil.demo.loader:get_js
-      stylesheets = yafowil.demo.loader:get_css
       """,
 )
