@@ -12,7 +12,7 @@ import sphinx.directives
 from sphinx.highlighting import PygmentsBridge
 from webob import Request, Response
 from chameleon import PageTemplateLoader
-from yafowil import loader
+import yafowil.loader
 import yafowil.webob
 from yafowil.base import factory
 from yafowil.controller import Controller
@@ -142,6 +142,10 @@ def dispatch_resource(path, environ, start_response):
     return resource_response(filepath, environ, start_response, ct)
 
 
+def dummy_save(widget, data):
+    print data.extracted
+
+
 def render_forms(example, environ, plugin_name):
     result = []
     for part in example:
@@ -165,7 +169,7 @@ def render_forms(example, environ, plugin_name):
                 'label': 'submit',
                 'action': 'save',
                 'class_add': 'btn-primary',
-                'handler': lambda widget, data: None})
+                'handler': dummy_save})
         controller = Controller(form, Request(environ))
         record['form'] = controller.rendered
         doc_html = docutils.core.publish_string(part['doc'],
