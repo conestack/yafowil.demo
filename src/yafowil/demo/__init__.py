@@ -163,15 +163,20 @@ def render_forms(example, environ, plugin_name):
                 'class': 'form-actions',
                 'structural': True,
             })
+        handler = part.get('handler', dummy_save)
         form['form_actions']['submit'] = factory(
             '#button',
             props={
                 'label': 'submit',
                 'action': 'save',
                 'class_add': 'btn-primary',
-                'handler': dummy_save})
+                'handler': handler,
+                'next': lambda req: True})
         controller = Controller(form, Request(environ))
-        record['form'] = controller.rendered
+        if controller.next:
+            record['form'] = form()
+        else:
+            record['form'] = controller.rendered
         doc_html = docutils.core.publish_string(part['doc'],
                                                 writer=DocWriter())
         doc_html = lxml.html.document_fromstring(doc_html)
