@@ -40,7 +40,7 @@ setup(name='yafowil.demo',
         'yafowil.yaml',
         'yafowil.bootstrap',
          # add-on widgets to document
-        'yafowil.widget.alohaeditor',
+        #'yafowil.widget.alohaeditor',
         'yafowil.widget.array',
         'yafowil.widget.autocomplete',
         'yafowil.widget.datetime',   
@@ -58,8 +58,6 @@ setup(name='yafowil.demo',
       ),
       entry_points="""
       [yafowil.plugin]
-      resourcedir = yafowil.demo:get_resource_dir
-      javascripts = yafowil.demo:get_js
-      stylesheets = yafowil.demo:get_css
+      register = yafowil.demo.loader:register
       """,
 )

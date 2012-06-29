@@ -13,7 +13,7 @@ from sphinx.highlighting import PygmentsBridge
 from wsgiref.util import request_uri
 from webob import Request, Response
 from chameleon import PageTemplateLoader
-from yafowil import loader
+import yafowil.loader
 import yafowil.webob
 from yafowil.base import factory
 from yafowil.controller import Controller
@@ -21,9 +21,6 @@ from yafowil.tests import fxml
 from yafowil.utils import (
     Tag,
     get_plugin_names,
-    get_resource_directory,
-    get_javascripts,
-    get_stylesheets,
     get_example_names,
     get_example,
 )
@@ -91,35 +88,6 @@ def pygments_styles(environ, start_response):
     return response(environ, start_response)
 
 
-def get_resource_dir():
-    return os.path.join(curdir, 'resources')
-
-
-def get_js():
-    return [{
-        'resource': 'jquery-1.7.2.min.js',
-        'thirdparty': False,
-        'order': 10,
-    }, {
-        'resource': 'jquery-ui-1.8.18.min.js',
-        'thirdparty': False,
-        'order': 11,
-    }]
-
-
-def get_css():
-    return [{
-        #'resource': 'jquery-ui-1.8.18.css',
-        'resource': 'jquery-ui-1.8.16.bootstrap.css',
-        'thirdparty': False,
-        'order': 10,
-    }, {
-        'resource': 'yafowil.demo.css',
-        'thirdparty': False,
-        'order': 20,
-    }]
-
-
 def resource_response(path, environ, start_response, content_type):
     response = Response(content_type=content_type)
     with open(path) as fd:
@@ -141,15 +109,15 @@ def get_resources(current_plugin_name=None):
         whitelist = [current_plugin_name] + RESOURCE_DELIVERY_WHITELIST
         if plugin_name not in whitelist:
             continue
-        plugin_resources_dir = get_resource_directory(plugin_name)
-        resource_name = '++resource++%s' % plugin_name
-        if not (plugin_resources_dir):
+        resources = factory.resources_for(plugin_name)
+        if not resources:
             continue
-        for js in get_javascripts(plugin_name):
+        resource_name = '++resource++%s' % plugin_name
+        for js in resources['js']:
             if not js['resource'].startswith('http'):
                 js['resource'] = resource_name + '/' + js['resource']
             all_js.append(js)
-        for css in get_stylesheets(plugin_name):
+        for css in resources['css']:
             if not css['resource'].startswith('http'):
                 css['resource'] = resource_name + '/' + css['resource']
             all_css.append(css)
@@ -165,14 +133,18 @@ def get_resources(current_plugin_name=None):
 
 def dispatch_resource(path, environ, start_response):
     plugin_name = path.split('/')[0][12:]
-    plugin_resources_dir = get_resource_directory(plugin_name)
-    filepath = os.path.join(plugin_resources_dir, *path.split('/')[1:])
+    resources = factory.resources_for(plugin_name)
+    filepath = os.path.join(resources['resourcedir'], *path.split('/')[1:])
     ct = 'text/plain'
     for key in CTMAP:
         if path.endswith(key):
             ct = CTMAP[key]
             break
     return resource_response(filepath, environ, start_response, ct)
+
+
+def dummy_save(widget, data):
+    print data.extracted
 
 
 def render_forms(example, environ, plugin_name):
@@ -192,15 +164,20 @@ def render_forms(example, environ, plugin_name):
                 'class': 'form-actions',
                 'structural': True,
             })
+        handler = part.get('handler', dummy_save)
         form['form_actions']['submit'] = factory(
             '#button',
             props={
                 'label': 'submit',
                 'action': 'save',
                 'class_add': 'btn-primary',
-                'handler': lambda widget, data: None})
+                'handler': handler,
+                'next': lambda req: True})
         controller = Controller(form, Request(environ))
-        record['form'] = controller.rendered
+        if controller.next:
+            record['form'] = form()
+        else:
+            record['form'] = controller.rendered
         doc_html = docutils.core.publish_string(part['doc'],
                                                 writer=DocWriter())
         doc_html = lxml.html.document_fromstring(doc_html)
