@@ -13,6 +13,11 @@ from sphinx.highlighting import PygmentsBridge
 from wsgiref.util import request_uri
 from webob import Request, Response
 from chameleon import PageTemplateLoader
+from fanstatic import (
+    Fanstatic,
+    Library,
+    Resource,
+)
 import yafowil.loader
 import yafowil.webob
 from yafowil.base import factory
@@ -24,6 +29,34 @@ from yafowil.utils import (
     get_example_names,
     get_example,
 )
+
+
+library = Library(
+    'yafowil.demo',
+    'resources')
+
+
+## JS
+jquery_1_7_2_js = Resource(
+    library,
+    'jquery-1.7.2.min.js')
+
+jquery_ui_1_8_18_js = Resource(
+    library,
+    'jquery-ui-1.8.18.min.js',
+    depends=[jquery_1_7_2_js])
+
+
+## CSS
+jquery_ui_1_8_16_bootstrap_css = Resource(
+    library,
+    'jquery-ui-1.8.16.bootstrap.css')
+
+yafowil_demo_css = Resource(
+    library,
+    'yafowil.demo.css',
+    depends=[jquery_ui_1_8_16_bootstrap_css])
+
 
 curdir = os.path.dirname(__file__)
 
@@ -200,7 +233,10 @@ def execute_route(example, route, environ, start_response):
     raise ValueError('No route to: %s' % environ['PATH_INFO'])
 
 
-def app(environ, start_response):
+def process(environ, start_response):
+    jquery_ui_1_8_18_js.need()
+    yafowil_demo_css.need()
+    
     path = environ['PATH_INFO'].strip('/')
     if path == 'favicon.ico':
         return dispatch_resource('++resource++yafowil.demo/favicon.ico',
@@ -236,3 +272,6 @@ def app(environ, start_response):
                     sections=sections,
                     current_name=plugin_name)
     return Response(body=body)(environ, start_response)
+
+
+app = Fanstatic(process)

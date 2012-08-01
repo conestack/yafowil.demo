@@ -96,7 +96,7 @@
           </div>
           <div tal:condition="not forms">
             <img class="yafowil-logo"
-                 src="/++resource++yafowil.demo/yafowil.png" 
+                 src="/fanstatic/yafowil.demo/yafowil.png" 
                  alt="yafowil logo" 
                  title="yafowil - declarative forms" 
                  height="211"

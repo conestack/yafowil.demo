@@ -35,6 +35,7 @@ setup(name='yafowil.demo',
         'sphinx',
         'Chameleon',
         'docutils',
+        'fanstatic',
         'yafowil',
         'yafowil.webob',
         'yafowil.yaml',
@@ -56,8 +57,9 @@ setup(name='yafowil.demo',
       extras_require = dict(
           test=tests_require,
       ),
-      entry_points="""
-      [yafowil.plugin]
-      register = yafowil.demo.loader:register
-      """,
+      entry_points={
+          'fanstatic.libraries': [
+              'yafowil.demo = yafowil.demo:library',
+          ],
+      },
 )
