@@ -31,27 +31,21 @@ from yafowil.utils import (
     get_example,
 )
 from js.jquery import jquery
+from js.jqueryui import (
+    ui_core,
+    ui_position,
+    ui_widget,
+    ui_mouse,
+    ui_draggable,
+    ui_droppable,
+    ui_resizable,
+)
+from js.jqueryui_bootstrap import jqueryui_bootstrap
 
 
-library = Library(
-    'yafowil.demo',
-    'resources')
-
-jquery_ui_1_8_18_js = Resource(
-    library,
-    'jquery-ui-1.8.18.min.js',
-    depends=[jquery])
-
-
-## CSS
-jquery_ui_1_8_16_bootstrap_css = Resource(
-    library,
-    'jquery-ui-1.8.16.bootstrap.css')
-
-yafowil_demo_css = Resource(
-    library,
-    'yafowil.demo.css',
-    depends=[jquery_ui_1_8_16_bootstrap_css])
+library = Library('yafowil.demo', 'resources')
+yafowil_demo_css = Resource(library, 'yafowil.demo.css',
+                            depends=[jqueryui_bootstrap])
 
 
 curdir = os.path.dirname(__file__)
@@ -237,10 +231,21 @@ def execute_route(example, route, environ, start_response):
     raise ValueError('No route to: %s' % environ['PATH_INFO'])
 
 
-def process(environ, start_response):
-    jquery_ui_1_8_18_js.need()
+def load_fanstatic_resources():
+    jquery.need()
+    ui_core.need()
+    ui_position.need()
+    ui_widget.need()
+    ui_mouse.need()
+    ui_draggable.need()
+    ui_droppable.need()
+    ui_resizable.need()
+    jqueryui_bootstrap.need()
     yafowil_demo_css.need()
-    
+
+
+def process(environ, start_response):
+    load_fanstatic_resources()
     path = environ['PATH_INFO'].strip('/')
     if path == 'favicon.ico':
         return dispatch_resource('++resource++yafowil.demo/favicon.ico',
