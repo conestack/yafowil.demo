@@ -1,5 +1,6 @@
 import os
 import sys
+import copy
 import lxml.html
 import lxml.etree
 import docutils.core
@@ -29,22 +30,17 @@ from yafowil.utils import (
     get_example_names,
     get_example,
 )
+from js.jquery import jquery
 
 
 library = Library(
     'yafowil.demo',
     'resources')
 
-
-## JS
-jquery_1_7_2_js = Resource(
-    library,
-    'jquery-1.7.2.min.js')
-
 jquery_ui_1_8_18_js = Resource(
     library,
     'jquery-ui-1.8.18.min.js',
-    depends=[jquery_1_7_2_js])
+    depends=[jquery])
 
 
 ## CSS
@@ -142,15 +138,22 @@ def get_resources(current_plugin_name=None):
         whitelist = [current_plugin_name] + RESOURCE_DELIVERY_WHITELIST
         if plugin_name not in whitelist:
             continue
-        resources = factory.resources_for(plugin_name)
+        resources = factory.resources_for(plugin_name, False)
+        resources = copy.deepcopy(resources)
         if not resources:
             continue
         resource_name = '++resource++%s' % plugin_name
         for js in resources['js']:
+            if isinstance(js, Resource):
+                js.need()
+                continue
             if not js['resource'].startswith('http'):
                 js['resource'] = resource_name + '/' + js['resource']
             all_js.append(js)
         for css in resources['css']:
+            if isinstance(css, Resource):
+                css.need()
+                continue
             if not css['resource'].startswith('http'):
                 css['resource'] = resource_name + '/' + css['resource']
             all_css.append(css)
@@ -166,7 +169,8 @@ def get_resources(current_plugin_name=None):
 
 def dispatch_resource(path, environ, start_response):
     plugin_name = path.split('/')[0][12:]
-    resources = factory.resources_for(plugin_name)
+    resources = factory.resources_for(plugin_name, False)
+    resources = copy.deepcopy(resources)
     filepath = os.path.join(resources['resourcedir'], *path.split('/')[1:])
     ct = 'text/plain'
     for key in CTMAP:
