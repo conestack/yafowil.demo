@@ -152,11 +152,12 @@ def render_forms(example, environ, plugin_name):
     for part in example:
         record = {}
         widget = part['widget']
+        action = '/++widget++%s/index.html#%s' % (plugin_name, widget.name)
         form = factory(
             u'#form',
             name=widget.name,
             props={
-                'action': '/++widget++%s/index.html' % plugin_name})
+                'action': action})
         form[widget.name] = widget
         form['form_actions'] = factory(
             'div',
