@@ -69,8 +69,7 @@
                     plugin name
                   </a>
                 </li>
-                <li class="active"
-                    tal:condition="current_name == example_name">
+                <li tal:condition="current_name == example_name">
                   <a href="${'/++widget++' + example_name + '/index.html'}"
                      tal:content="example_name">
                     plugin name
