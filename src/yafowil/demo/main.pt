@@ -58,33 +58,34 @@
       
       <div class="row">
         <div class="span4">
-          <ul class="nav nav-list well">
-            <li class="nav-header">
-              Packages
-            </li>
-            <tal:li repeat="example_name example_names">
-              <li tal:condition="current_name != example_name">
-                <a href="${'/++widget++' + example_name + '/index.html'}"
-                   tal:content="example_name">
-                  plugin name
-                </a>
-              </li>
-              <li class="active"
-                  tal:condition="current_name == example_name">
-                <a href="${'/++widget++' + example_name + '/index.html'}"
-                   tal:content="example_name">
-                  plugin name
-                </a>
-                <ul class="nav nav-list"
-                    tal:condition="len(sections) > 1">
-                  <li tal:repeat="section sections">
-                    <a href="${'#' + section['id']}"
-                       tal:content="section['title']">title</a>
-                  </li>
-                </ul>
-              </li>
-            </tal:li>
-          </ul>
+          <div class="well navigation" style="padding:8px;">
+            <ul class="nav nav-list">
+              <li class="nav-header">Packages</li>
+              <li class="divider"></li>
+              <tal:li repeat="example_name example_names">
+                <li tal:condition="current_name != example_name">
+                  <a href="${'/++widget++' + example_name + '/index.html'}"
+                     tal:content="example_name">
+                    plugin name
+                  </a>
+                </li>
+                <li class="active"
+                    tal:condition="current_name == example_name">
+                  <a href="${'/++widget++' + example_name + '/index.html'}"
+                     tal:content="example_name">
+                    plugin name
+                  </a>
+                  <ul class="nav nav-list"
+                      tal:condition="len(sections) > 1">
+                    <li tal:repeat="section sections">
+                      <a href="${'#' + section['id']}"
+                         tal:content="section['title']">title</a>
+                    </li>
+                  </ul>
+                </li>
+              </tal:li>
+            </ul>
+          </div>
         </div>
       
         <div class="span8">
