@@ -98,10 +98,7 @@
             <img class="yafowil-logo"
                  src="/++resource++yafowil.demo/yafowil.png" 
                  alt="yafowil logo" 
-                 title="yafowil - declarative forms" 
-                 height="211"
-                 width="420"
-                 />
+                 title="yafowil - declarative forms" />
             <p>
               <strong>
                 Collection of YAFOWIL core and addon widget examples
