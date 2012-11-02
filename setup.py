@@ -41,6 +41,7 @@ setup(name='yafowil.demo',
         'yafowil.bootstrap',
          # add-on widgets to document
         #'yafowil.widget.alohaeditor',
+        'yafowil.widget.ace',
         'yafowil.widget.array',
         'yafowil.widget.autocomplete',
         'yafowil.widget.datetime',   
