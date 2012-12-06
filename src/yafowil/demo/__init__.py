@@ -1,6 +1,5 @@
 import os
 import sys
-import copy
 import lxml.html
 import lxml.etree
 import docutils.core
@@ -14,11 +13,6 @@ from sphinx.highlighting import PygmentsBridge
 from wsgiref.util import request_uri
 from webob import Request, Response
 from chameleon import PageTemplateLoader
-from fanstatic import (
-    Fanstatic,
-    Library,
-    Resource,
-)
 import yafowil.loader
 import yafowil.webob
 from yafowil.base import factory
@@ -30,23 +24,6 @@ from yafowil.utils import (
     get_example_names,
     get_example,
 )
-from js.jquery import jquery
-from js.jqueryui import (
-    ui_core,
-    ui_position,
-    ui_widget,
-    ui_mouse,
-    ui_draggable,
-    ui_droppable,
-    ui_resizable,
-)
-from js.jqueryui_bootstrap import jqueryui_bootstrap
-
-
-library = Library('yafowil.demo', 'resources')
-yafowil_demo_css = Resource(library, 'yafowil.demo.css',
-                            depends=[jqueryui_bootstrap])
-
 
 curdir = os.path.dirname(__file__)
 
@@ -132,22 +109,15 @@ def get_resources(current_plugin_name=None):
         whitelist = [current_plugin_name] + RESOURCE_DELIVERY_WHITELIST
         if plugin_name not in whitelist:
             continue
-        resources = factory.resources_for(plugin_name, False)
-        resources = copy.deepcopy(resources)
+        resources = factory.resources_for(plugin_name)
         if not resources:
             continue
         resource_name = '++resource++%s' % plugin_name
         for js in resources['js']:
-            if isinstance(js, Resource):
-                js.need()
-                continue
             if not js['resource'].startswith('http'):
                 js['resource'] = resource_name + '/' + js['resource']
             all_js.append(js)
         for css in resources['css']:
-            if isinstance(css, Resource):
-                css.need()
-                continue
             if not css['resource'].startswith('http'):
                 css['resource'] = resource_name + '/' + css['resource']
             all_css.append(css)
@@ -163,8 +133,7 @@ def get_resources(current_plugin_name=None):
 
 def dispatch_resource(path, environ, start_response):
     plugin_name = path.split('/')[0][12:]
-    resources = factory.resources_for(plugin_name, False)
-    resources = copy.deepcopy(resources)
+    resources = factory.resources_for(plugin_name)
     filepath = os.path.join(resources['resourcedir'], *path.split('/')[1:])
     ct = 'text/plain'
     for key in CTMAP:
@@ -183,11 +152,12 @@ def render_forms(example, environ, plugin_name):
     for part in example:
         record = {}
         widget = part['widget']
+        action = '/++widget++%s/index.html#%s' % (plugin_name, widget.name)
         form = factory(
             u'#form',
             name=widget.name,
             props={
-                'action': '/++widget++%s/index.html' % plugin_name})
+                'action': action})
         form[widget.name] = widget
         form['form_actions'] = factory(
             'div',
@@ -231,21 +201,7 @@ def execute_route(example, route, environ, start_response):
     raise ValueError('No route to: %s' % environ['PATH_INFO'])
 
 
-def load_fanstatic_resources():
-    jquery.need()
-    ui_core.need()
-    ui_position.need()
-    ui_widget.need()
-    ui_mouse.need()
-    ui_draggable.need()
-    ui_droppable.need()
-    ui_resizable.need()
-    jqueryui_bootstrap.need()
-    yafowil_demo_css.need()
-
-
-def process(environ, start_response):
-    load_fanstatic_resources()
+def app(environ, start_response):
     path = environ['PATH_INFO'].strip('/')
     if path == 'favicon.ico':
         return dispatch_resource('++resource++yafowil.demo/favicon.ico',
@@ -281,6 +237,3 @@ def process(environ, start_response):
                     sections=sections,
                     current_name=plugin_name)
     return Response(body=body)(environ, start_response)
-
-
-app = Fanstatic(process)

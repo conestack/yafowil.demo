@@ -1,24 +1,25 @@
-# Copyright 2012, BlueDynamics Alliance - http://bluedynamics.com
+from setuptools import (
+    setup,
+    find_packages,
+)
 
-from setuptools import setup, find_packages
-import sys, os
 
 version = '1.0'
 shortdesc = \
 'YAFOWIL - Demo Application'
 longdesc = ""
-
 tests_require = ['interlude']
+
 
 setup(name='yafowil.demo',
       version=version,
       description=shortdesc,
       long_description=longdesc,
       classifiers=[
-            'License :: OSI Approved :: Python Software Foundation License',
-            'Operating System :: OS Independent',
-            'Programming Language :: Python',
-            'Topic :: Software Development',
+          'License :: OSI Approved :: Python Software Foundation License',
+          'Operating System :: OS Independent',
+          'Programming Language :: Python',
+          'Topic :: Software Development',
       ],
       keywords='html input widgets form compound',
       author='BlueDynamics Alliance',
@@ -31,35 +32,35 @@ setup(name='yafowil.demo',
       include_package_data=True,
       zip_safe=True,
       install_requires=[
-        'setuptools',
-        'sphinx',
-        'Chameleon',
-        'docutils',
-        'js.jqueryui_bootstrap',
-        'yafowil',
-        'yafowil.webob',
-        'yafowil.yaml',
-        'yafowil.bootstrap[fanstatic]',
-        # add-on widgets to document
-        #'yafowil.widget.alohaeditor',
-        'yafowil.widget.array[fanstatic]',
-        'yafowil.widget.autocomplete',
-        'yafowil.widget.datetime',   
-        'yafowil.widget.dict',
-        'yafowil.widget.dynatree',
-        'yafowil.widget.image',
-        'yafowil.widget.multiselect',
-        'yafowil.widget.richtext',
-        'yafowil.widget.wysihtml5',
+          'setuptools',
+          'sphinx',
+          'Chameleon',
+          'docutils',
+          'yafowil',
+          'yafowil.webob',
+          'yafowil.yaml',
+          'yafowil.bootstrap',
+           # add-on widgets to document
+          #'yafowil.widget.alohaeditor',
+          'yafowil.widget.ace',
+          'yafowil.widget.array',
+          'yafowil.widget.autocomplete',
+          'yafowil.widget.chosen',
+          'yafowil.widget.datetime',
+          'yafowil.widget.dict',
+          'yafowil.widget.dynatree',
+          'yafowil.widget.image',
+          'yafowil.widget.multiselect',
+          'yafowil.widget.richtext',
+          'yafowil.widget.wysihtml5',
       ],
       tests_require=tests_require,
       test_suite="yafowil.tests.test_suite",
       extras_require = dict(
           test=tests_require,
       ),
-      entry_points={
-          'fanstatic.libraries': [
-              'yafowil.demo = yafowil.demo:library',
-          ],
-      },
+      entry_points="""
+      [yafowil.plugin]
+      register = yafowil.demo.loader:register
+      """,
 )

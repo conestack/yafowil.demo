@@ -16,7 +16,7 @@ input[type="search"],
 input[type="tel"],
 input[type="color"],
 .uneditable-input {
-    /*height: auto;*/
+    height: auto;
 }
 input[type="submit"] {
 	display:block;
@@ -27,21 +27,11 @@ input[type="submit"] {
     color: #FFFFFF;
     text-shadow: 2px 2px 3px #777777;
 }
-img.yafowil-logo {
-	margin-top: 2em;
-	margin-left: 2em;
-	margin-bottom: 2em;
-}
 .content-wrapper {
-    padding-top: 40px;
+    padding-top: 52px;
 }
 .example-form {
-    margin-top: 2em;
-}
-.nav-list {
-	margin-top: 2em;
-	padding-top: 4px;
-	padding-bottom: 4px;
+    margin-bottom: 2em;
 }
 li.active ul {
     margin-top: 0;

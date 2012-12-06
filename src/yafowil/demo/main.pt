@@ -58,33 +58,33 @@
       
       <div class="row">
         <div class="span4">
-          <ul class="nav nav-list well">
-            <li class="nav-header">
-              Packages
-            </li>
-            <tal:li repeat="example_name example_names">
-              <li tal:condition="current_name != example_name">
-                <a href="${'/++widget++' + example_name + '/index.html'}"
-                   tal:content="example_name">
-                  plugin name
-                </a>
-              </li>
-              <li class="active"
-                  tal:condition="current_name == example_name">
-                <a href="${'/++widget++' + example_name + '/index.html'}"
-                   tal:content="example_name">
-                  plugin name
-                </a>
-                <ul class="nav nav-list"
-                    tal:condition="len(sections) > 1">
-                  <li tal:repeat="section sections">
-                    <a href="${'#' + section['id']}"
-                       tal:content="section['title']">title</a>
-                  </li>
-                </ul>
-              </li>
-            </tal:li>
-          </ul>
+          <div class="well navigation" style="padding:8px;">
+            <ul class="nav nav-list">
+              <li class="nav-header">Packages</li>
+              <li class="divider"></li>
+              <tal:li repeat="example_name example_names">
+                <li tal:condition="current_name != example_name">
+                  <a href="${'/++widget++' + example_name + '/index.html'}"
+                     tal:content="example_name">
+                    plugin name
+                  </a>
+                </li>
+                <li tal:condition="current_name == example_name">
+                  <a href="${'/++widget++' + example_name + '/index.html'}"
+                     tal:content="example_name">
+                    plugin name
+                  </a>
+                  <ul class="nav nav-list"
+                      tal:condition="len(sections) > 1">
+                    <li tal:repeat="section sections">
+                      <a href="${'#' + section['id']}"
+                         tal:content="section['title']">title</a>
+                    </li>
+                  </ul>
+                </li>
+              </tal:li>
+            </ul>
+          </div>
         </div>
       
         <div class="span8">
@@ -96,19 +96,21 @@
           </div>
           <div tal:condition="not forms">
             <img class="yafowil-logo"
-                 src="/fanstatic/yafowil.demo/yafowil.png" 
+                 src="/++resource++yafowil.demo/yafowil.png" 
                  alt="yafowil logo" 
-                 title="yafowil - declarative forms" 
-                 height="211"
-                 width="420"
-                 />
+                 title="yafowil - declarative forms" />
             <p>
               <strong>
                 Collection of YAFOWIL core and addon widget examples
               </strong>
             </p>
             <p>
-              This page is brought to you by aliens
+              For a complete documentation of YAFOWIL and it's provided
+              blueprints please look at
+              <a href="http://yafowil.info"
+                 title="YAFOWIL DOCUMENTATION PAGE">
+                the main documentation page
+              </a>
             </p>
           </div>
         </div>
