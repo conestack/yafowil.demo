@@ -10,3 +10,4 @@ parts/
 develop-eggs/
 src/yafowil.demo.egg-info/
 .settings/
+vpython/
