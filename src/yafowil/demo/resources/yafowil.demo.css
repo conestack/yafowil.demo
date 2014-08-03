@@ -10,6 +10,9 @@ body {
     margin-left:1em;
     margin-top:0.4em;
 }
+.list-group-item .list-unstyled li {
+    padding-bottom:0.25em;
+}
 footer p {
     margin:12px;
 }
