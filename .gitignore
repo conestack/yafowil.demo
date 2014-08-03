@@ -2,11 +2,13 @@
 /.project
 /.pydevproject
 /.mr.developer.cfg
+/.pydevproject.bak
+/.installed.cfg
 /bin/
 /devsrc/
 /eggs/
 /parts/
-/.installed.cfg
+/env/
 /develop-eggs/
 /src/yafowil.demo.egg-info/
 /.settings/

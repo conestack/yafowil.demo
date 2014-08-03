@@ -25,7 +25,9 @@ from yafowil.utils import (
     get_example,
 )
 
+
 curdir = os.path.dirname(__file__)
+
 
 CTMAP = {
     '.js': 'text/javascript',
@@ -97,9 +99,14 @@ def resource_response(path, environ, start_response, content_type):
 
 RESOURCE_DELIVERY_WHITELIST = [
      'yafowil.demo',
-     'yafowil.loader',
      'yafowil.bootstrap',
 ]
+
+
+def is_remote_resource(resource):
+    return resource.startswith('http://') \
+        or resource.startswith('https://') \
+        or resource.startswith('//')
 
 
 def get_resources(current_plugin_name=None):
@@ -112,13 +119,13 @@ def get_resources(current_plugin_name=None):
         resources = factory.resources_for(plugin_name)
         if not resources:
             continue
-        resource_name = '++resource++%s' % plugin_name
+        resource_name = '/++resource++%s' % plugin_name
         for js in resources['js']:
-            if not js['resource'].startswith('http'):
+            if not is_remote_resource(js['resource']):
                 js['resource'] = resource_name + '/' + js['resource']
             all_js.append(js)
         for css in resources['css']:
-            if not css['resource'].startswith('http'):
+            if not is_remote_resource(css['resource']):
                 css['resource'] = resource_name + '/' + css['resource']
             all_css.append(css)
     ret = dict(js=list(), css=list())
@@ -167,11 +174,11 @@ def render_forms(example, environ, plugin_name):
             })
         handler = part.get('handler', dummy_save)
         form['form_actions']['submit'] = factory(
-            '#button',
+            'field:div:#button',
             props={
                 'label': 'submit',
                 'action': 'save',
-                'class_add': 'btn-primary',
+                'div.class_add': 'col-sm-offset-2 col-sm-10',
                 'handler': handler,
                 'next': lambda req: True})
         controller = Controller(form, Request(environ))

@@ -1,26 +1,32 @@
 import os
 from yafowil.base import factory
 
+
 resourcedir = os.path.join(os.path.dirname(__file__), 'resources')
 
+
 js = [{
-    'resource': 'jquery-1.7.2.min.js',
-    'thirdparty': False,
+    'group': 'yafowil.demo.dependencies',
+    'resource': 'jquery-1.9.1.js',
     'order': 10,
 }, {
-    'resource': 'jquery-ui-1.8.18.min.js',
-    'thirdparty': False,
-    'order': 11,
+    'group': 'yafowil.demo.dependencies',
+    'resource': 'jquery.migrate-1.2.1.js',
+    'order': 10,
+}, {
+    'group': 'yafowil.demo.dependencies',
+    'resource': 'jqueryui/jquery-ui-1.10.3.custom.js',
+    'order': 10,
 }]
 
+
 css = [{
-    #'resource': 'jquery-ui-1.8.18.css',
-    'resource': 'jquery-ui-1.8.16.bootstrap.css',
-    'thirdparty': False,
+    'group': 'yafowil.demo.dependencies',
+    'resource': 'jqueryui/jquery-ui-1.10.3.custom.css',
     'order': 10,
 }, {
+    'group': 'yafowil.demo.common',
     'resource': 'yafowil.demo.css',
-    'thirdparty': False,
     'order': 20,
 }]
 

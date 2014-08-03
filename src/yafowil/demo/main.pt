@@ -1,34 +1,33 @@
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal">
+
   <head>
-    <title>YAFOWIL Examples - ${current_name or 'Main'}</title>    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>YAFOWIL Examples - ${current_name or 'Main'}</title>
     <link rel="shortcut icon" href="/favicon.ico" />
 
     <tal:js repeat="res resources['js']">
-      <script tal:condition="res.startswith('http')"
-              src="${res}"></script>
-      <script tal:condition="not res.startswith('http')"
-              src="${'/' + res}"></script>
+      <script src="${res}"></script>
     </tal:js>
 
     <link href="/pygments.css"
           rel="stylesheet"
           type="text/css"
           media="all" />
-    
+
     <tal:css repeat="res resources['css']">
-      <link tal:condition="res.startswith('http')"
-            href="${res}"
-            rel="stylesheet"
-            type="text/css"
-            media="all" />
-      <link tal:condition="not res.startswith('http')"
-            href="${'/' + res}"
+      <link href="${res}"
             rel="stylesheet"
             type="text/css"
             media="all" />
     </tal:css>
 
   </head>
+
   <body>
 
     <a href="https://github.com/bluedynamics/${current_name or 'yafowil.demo'}">
@@ -41,10 +40,10 @@
            title="Fork ${current_name or 'yafowil.demo'} on GitHub">
     </a>
 
-    <div id="navbar" class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <a href="/" class="brand">
+    <div class="navbar navbar-inverse navbar-top">
+      <div class="container">
+        <div class="navbar-header">
+          <a href="/" class="navbar-brand">
             YAFOWIL EXAMPLES
             <span tal:condition="current_name">
               - <span tal:replace="current_name">yafowil</span>
@@ -55,45 +54,48 @@
     </div>
 
     <div class="container content-wrapper">
-      
       <div class="row">
-        <div class="span4">
-          <div class="well navigation" style="padding:8px;">
-            <ul class="nav nav-list">
-              <li class="nav-header">Packages</li>
-              <li class="divider"></li>
-              <tal:li repeat="example_name example_names">
-                <li tal:condition="current_name != example_name">
-                  <a href="${'/++widget++' + example_name + '/index.html'}"
-                     tal:content="example_name">
-                    plugin name
-                  </a>
-                </li>
-                <li tal:condition="current_name == example_name">
-                  <a href="${'/++widget++' + example_name + '/index.html'}"
-                     tal:content="example_name">
-                    plugin name
-                  </a>
-                  <ul class="nav nav-list"
-                      tal:condition="len(sections) > 1">
-                    <li tal:repeat="section sections">
-                      <a href="${'#' + section['id']}"
-                         tal:content="section['title']">title</a>
-                    </li>
-                  </ul>
-                </li>
-              </tal:li>
-            </ul>
-          </div>
+
+        <div class="col-md-3">
+
+          <ul class="list-group">
+            <li class="list-group-item active">Packages</li>
+            <tal:li repeat="example_name example_names">
+              <li class="list-group-item"
+                  tal:condition="current_name != example_name">
+                <a href="${'/++widget++' + example_name + '/index.html'}"
+                   tal:content="example_name">
+                  plugin name
+                </a>
+              </li>
+              <li class="list-group-item list-group-item-warning"
+                  tal:condition="current_name == example_name">
+                <a href="${'/++widget++' + example_name + '/index.html'}"
+                   tal:content="example_name">
+                  plugin name
+                </a>
+                <ul class="list-unstyled"
+                    tal:condition="len(sections) > 1">
+                  <li tal:repeat="section sections">
+                    <a href="${'#' + section['id']}"
+                       tal:content="section['title']">title</a>
+                  </li>
+                </ul>
+              </li>
+            </tal:li>
+          </ul>
+
         </div>
-      
-        <div class="span8">
+
+        <div class="col-md-9">
+
           <div tal:condition="forms">
             <div class="example-form" tal:repeat="part forms">
               <tal:part replace="structure part['doc']" />
               <tal:part replace="structure part['form']" />
             </div>
           </div>
+
           <div tal:condition="not forms">
             <img class="yafowil-logo"
                  src="/++resource++yafowil.demo/yafowil.png" 
@@ -113,15 +115,20 @@
               </a>
             </p>
           </div>
+
         </div>
-      
       </div>
-      
-      <div class="footer">
-        Copyright 2010-2012 by
-        <a href="http://bluedynamics.com">BlueDynamics Alliance</a>
-      </div>
+
+      <footer class="navbar-default navbar-fixed-bottom">
+        <div class="container">
+          <p>
+            Copyright (c) 2010-2014
+            <a href="http://www.bluedynamics.eu/">BlueDynamics Alliance</a>.
+          </p>
+        </div>
+      </footer>
 
     </div>
   </body>
+
 </html>

@@ -1,47 +1,15 @@
-/* Bootstrap patch for input height. Version 2.0.4  */
-select,
-textarea,
-input[type="text"],
-input[type="password"],
-input[type="datetime"],
-input[type="datetime-local"],
-input[type="date"],
-input[type="month"],
-input[type="time"],
-input[type="week"],
-input[type="number"],
-input[type="email"],
-input[type="url"],
-input[type="search"],
-input[type="tel"],
-input[type="color"],
-.uneditable-input {
-    height: auto;
+body {
+    padding-bottom:44px;
+    overflow-y:scroll;
 }
-input[type="submit"] {
-	display:block;
+.navbar-top {
+    border-radius:0;
+    border-width:0 0 1px;
 }
-
-/* YAFOWIL example page styles */
-.navbar .brand {
-    color: #FFFFFF;
-    text-shadow: 2px 2px 3px #777777;
+.list-group-item .list-unstyled {
+    margin-left:1em;
+    margin-top:0.4em;
 }
-.content-wrapper {
-    padding-top: 52px;
-}
-.example-form {
-    margin-bottom: 2em;
-}
-li.active ul {
-    margin-top: 0;
-    margin-left: -15px;
-    margin-right: -15px;
-    padding-top: 0;
-}
-li.active ul li a {
-    padding-left:30px;
-}
-.footer {
-    margin-top: 2em;
+footer p {
+    margin:12px;
 }
