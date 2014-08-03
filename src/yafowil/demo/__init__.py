@@ -1,5 +1,6 @@
 import os
 import sys
+import traceback
 import lxml.html
 import lxml.etree
 import docutils.core
@@ -208,39 +209,51 @@ def execute_route(example, route, environ, start_response):
     raise ValueError('No route to: %s' % environ['PATH_INFO'])
 
 
+def format_traceback():
+    etype, value, tb = sys.exc_info()
+    ret = ''.join(traceback.format_exception(etype, value, tb))
+    return '<pre>%s</pre>' % ret
+
+
 def app(environ, start_response):
-    path = environ['PATH_INFO'].strip('/')
-    if path == 'favicon.ico':
-        return dispatch_resource('++resource++yafowil.demo/favicon.ico',
-                                 environ, start_response)
-    if path == 'pygments.css':
-        return pygments_styles(environ, start_response)
-    if path.startswith('++resource++'):
-        return dispatch_resource(path, environ, start_response)
-    if path.startswith('++widget++'):
-        splitted = path.split('/')
-        plugin_name = splitted[0][10:]
-        resources = get_resources(plugin_name)
-        example = get_example(plugin_name)
-        if splitted[1] != 'index.html':
-            return execute_route(example, splitted[1], environ, start_response)
-        sections = list()
-        for section in example:
-            sections.append({
-                'id': section['widget'].name,
-                'title': section.get('title', section['widget'].name),
-            })
-        forms = render_forms(example, environ, plugin_name)
-    else:
-        plugin_name = None
-        resources = get_resources()
-        sections = list()
-        forms = None
-    templates = PageTemplateLoader(curdir)
-    template = templates['main.pt']
-    body = template(resources=resources,
-                    forms=forms,
-                    example_names=sorted(get_example_names()),
-                    sections=sections,
-                    current_name=plugin_name)
-    return Response(body=body)(environ, start_response)
+    try:
+        path = environ['PATH_INFO'].strip('/')
+        if path == 'favicon.ico':
+            return dispatch_resource('++resource++yafowil.demo/favicon.ico',
+                                     environ, start_response)
+        if path == 'pygments.css':
+            return pygments_styles(environ, start_response)
+        if path.startswith('++resource++'):
+            return dispatch_resource(path, environ, start_response)
+        if path.startswith('++widget++'):
+            splitted = path.split('/')
+            plugin_name = splitted[0][10:]
+            resources = get_resources(plugin_name)
+            example = get_example(plugin_name)
+            if splitted[1] != 'index.html':
+                return execute_route(example,
+                                     splitted[1],
+                                     environ,
+                                     start_response)
+            sections = list()
+            for section in example:
+                sections.append({
+                    'id': section['widget'].name,
+                    'title': section.get('title', section['widget'].name),
+                })
+            forms = render_forms(example, environ, plugin_name)
+        else:
+            plugin_name = None
+            resources = get_resources()
+            sections = list()
+            forms = None
+        templates = PageTemplateLoader(curdir)
+        template = templates['main.pt']
+        body = template(resources=resources,
+                        forms=forms,
+                        example_names=sorted(get_example_names()),
+                        sections=sections,
+                        current_name=plugin_name)
+        return Response(body=body)(environ, start_response)
+    except:
+        return Response(body=format_traceback())(environ, start_response)
