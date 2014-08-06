@@ -1,6 +1,6 @@
 #!/bin/bash
 
-EXPORT recaptcha-private-key=${:recaptcha-private-key}
-EXPORT recaptcha-public-key=${:recaptcha-public-key}
+export recaptcha_private_key=${:recaptcha_private_key}
+export recaptcha_public_key=${:recaptcha_public_key}
 
-./bin/gunicorn yafowil.demo:app
+./bin/gunicorn yafowil.demo:app -t 3600
