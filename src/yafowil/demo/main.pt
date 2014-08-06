@@ -103,7 +103,7 @@
                  title="yafowil - declarative forms" />
             <p>
               <strong>
-                Collection of YAFOWIL core and addon widget examples
+                Collection of YAFOWIL core and addon widget examples.
               </strong>
             </p>
             <p>
@@ -112,7 +112,15 @@
               <a href="http://yafowil.info"
                  title="YAFOWIL DOCUMENTATION PAGE">
                 the main documentation page
-              </a>
+              </a>.
+            </p>
+            <p>
+              The <a href="http://docs.yafowil.info/architecture.html#macros-predefined-factory-chains">macros</a>
+              used in all examples are defined in
+              <a href="https://github.com/bluedynamics/yafowil.bootstrap">yafowil.bootstrap</a>.
+              Take a look which blueprints this macros consist of if you plan
+              to skip the use of yafowil.bootstrap or if you want to define your
+              own macros.
             </p>
           </div>
 
