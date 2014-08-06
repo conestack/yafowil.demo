@@ -8,7 +8,6 @@ version = '1.1'
 shortdesc = \
 'YAFOWIL - Demo Application'
 longdesc = ""
-tests_require = ['interlude']
 
 
 setup(name='yafowil.demo',
@@ -58,13 +57,7 @@ setup(name='yafowil.demo',
           'yafowil.widget.slider',
           'yafowil.widget.wysihtml5',
       ],
-      tests_require=tests_require,
-      test_suite="yafowil.tests.test_suite",
-      extras_require = dict(
-          test=tests_require,
-      ),
       entry_points="""
       [yafowil.plugin]
       register = yafowil.demo.loader:register
-      """,
-)
+      """)
