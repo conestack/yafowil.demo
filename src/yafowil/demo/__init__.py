@@ -19,9 +19,9 @@ import yafowil.webob
 from yafowil.base import factory
 from yafowil.controller import Controller
 from yafowil.tests import fxml
+from yafowil.resources import YafowilResources
 from yafowil.utils import (
     Tag,
-    get_plugin_names,
     get_example_names,
     get_example,
 )
@@ -98,44 +98,21 @@ def resource_response(path, environ, start_response, content_type):
     return response(environ, start_response)
 
 
-RESOURCE_DELIVERY_WHITELIST = [
-     'yafowil.demo',
-     'yafowil.bootstrap',
-]
+class Resources(YafowilResources):
+
+    def configure_resource_directory(self, plugin_name, resourc_edir):
+        return '/++resource++%s' % plugin_name
 
 
-def is_remote_resource(resource):
-    return resource.startswith('http://') \
-        or resource.startswith('https://') \
-        or resource.startswith('//')
+resources = Resources()
 
 
 def get_resources(current_plugin_name=None):
-    all_js = list()
-    all_css = list()
-    for plugin_name in get_plugin_names():
-        whitelist = [current_plugin_name] + RESOURCE_DELIVERY_WHITELIST
-        if plugin_name not in whitelist:
-            continue
-        resources = factory.resources_for(plugin_name)
-        if not resources:
-            continue
-        resource_name = '/++resource++%s' % plugin_name
-        for js in resources['js']:
-            if not is_remote_resource(js['resource']):
-                js['resource'] = resource_name + '/' + js['resource']
-            all_js.append(js)
-        for css in resources['css']:
-            if not is_remote_resource(css['resource']):
-                css['resource'] = resource_name + '/' + css['resource']
-            all_css.append(css)
     ret = dict(js=list(), css=list())
-    all_js = sorted(all_js, key=lambda x: x['order'])
-    all_css = sorted(all_css, key=lambda x: x['order'])
-    for js in all_js:
-        ret['js'].append(js['resource'])
-    for css in all_css:
-        ret['css'].append(css['resource'])
+    for js in resources.js_resources:
+        ret['js'].append(js)
+    for css in resources.css_resources:
+        ret['css'].append(css)
     return ret
 
 
