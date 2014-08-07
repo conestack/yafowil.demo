@@ -3,8 +3,20 @@ yafowil.demo
 
 Demo Application for YAFOWIL.
 
-Start the application with::
+Installation
+------------
 
-   ./bin/gunicorn yafowil.demo:app
+Create ``buildout.cfg`` containing::
 
-and connect with your webbrowser to ``http://localhost:8000/``
+    [buildout]
+    extends = dev.cfg
+
+    [run]
+    recaptcha_private_key = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    recaptcha_public_key = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+Run buildout and start application with generated ``run.sh`` script::
+
+    ./run.sh
+
+Connect your browser to ``http://localhost:8000/``
