@@ -44,11 +44,14 @@
       <div class="container">
         <div class="navbar-header">
           <a href="/" class="navbar-brand">
-            YAFOWIL EXAMPLES
+            YAFOWIL Examples
             <span tal:condition="current_name">
               - <span tal:replace="current_name">yafowil</span>
             </span>
           </a>
+          <span class="navbar-text navbar-version pull-left">
+            <b>2.1</b>
+          </span>
         </div>
       </div>
     </div>
