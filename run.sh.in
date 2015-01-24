@@ -3,4 +3,4 @@
 export recaptcha_private_key=${:recaptcha_private_key}
 export recaptcha_public_key=${:recaptcha_public_key}
 
-./bin/gunicorn yafowil.demo:app -t 3600
+./bin/gunicorn yafowil.demo:app -t 3600 --b ${:bind_host}:${:bind_port}
