@@ -1,30 +1,27 @@
-import os
-import sys
-import traceback
-import lxml.html
-import lxml.etree
-import docutils.core
-from docutils import nodes
-from docutils.writers.html4css1 import (
-    Writer,
-    HTMLTranslator,
-)
-import sphinx.directives
-from sphinx.highlighting import PygmentsBridge
-from wsgiref.util import request_uri
-from webob import Request, Response
 from chameleon import PageTemplateLoader
-import yafowil.loader
-import yafowil.webob
+from docutils import nodes
+from docutils.writers.html4css1 import HTMLTranslator
+from docutils.writers.html4css1 import Writer
+from sphinx.highlighting import PygmentsBridge
+from webob import Request
+from webob import Response
+from wsgiref.util import request_uri
 from yafowil.base import factory
 from yafowil.controller import Controller
-from yafowil.tests import fxml
 from yafowil.resources import YafowilResources
-from yafowil.utils import (
-    Tag,
-    get_example_names,
-    get_example,
-)
+from yafowil.tests import fxml
+from yafowil.utils import Tag
+from yafowil.utils import get_example
+from yafowil.utils import get_example_names
+import docutils.core
+import lxml.etree
+import lxml.html
+import os
+import sphinx.directives
+import sys
+import traceback
+import yafowil.loader
+import yafowil.webob
 
 
 curdir = os.path.dirname(__file__)
@@ -58,13 +55,13 @@ class DocTranslator(HTMLTranslator):
             return HTMLTranslator.visit_literal_block(self, node)
         lang = self.highlightlang
         linenos = node.rawsource.count('\n') >= \
-                  self.highlightlinenothreshold - 1
+            self.highlightlinenothreshold - 1
         highlight_args = node.get('highlight_args', {})
-        if node.has_key('language'):
+        if 'language' in node:
             # code-block directives
             lang = node['language']
             highlight_args['force'] = True
-        if node.has_key('linenos'):
+        if 'linenos' in node:
             linenos = node['linenos']
 
         def warner(msg):
