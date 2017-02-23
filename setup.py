@@ -43,6 +43,7 @@ setup(
         'yafowil.widget.array',
         'yafowil.widget.autocomplete',
         'yafowil.widget.chosen',
+        'yafowil.widget.cron',
         'yafowil.widget.datetime',
         'yafowil.widget.dict',
         'yafowil.widget.dynatree',
