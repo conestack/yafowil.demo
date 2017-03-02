@@ -64,21 +64,13 @@
           <ul class="list-group">
             <li class="list-group-item active">Packages</li>
             <tal:li repeat="example_name example_names">
-              <li class="list-group-item"
-                  tal:condition="current_name != example_name">
-                <a href="${'/++widget++' + example_name + '/index.html'}"
-                   tal:content="example_name">
-                  plugin name
-                </a>
-              </li>
-              <li class="list-group-item list-group-item-warning"
-                  tal:condition="current_name == example_name">
+              <li class="list-group-item ${' list-group-item-warning' if current_name==example_name else ''}">
                 <a href="${'/++widget++' + example_name + '/index.html'}"
                    tal:content="example_name">
                   plugin name
                 </a>
                 <ul class="list-unstyled"
-                    tal:condition="len(sections) > 1">
+                    tal:condition="current_name == example_name and len(sections) > 1">
                   <li tal:repeat="section sections">
                     <a href="${'#' + section['id']}"
                        tal:content="section['title']">title</a>
