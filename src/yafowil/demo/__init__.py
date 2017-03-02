@@ -9,19 +9,17 @@ from wsgiref.util import request_uri
 from yafowil.base import factory
 from yafowil.controller import Controller
 from yafowil.resources import YafowilResources
-from yafowil.tests import fxml
-from yafowil.utils import Tag
 from yafowil.utils import get_example
 from yafowil.utils import get_example_names
+
 import docutils.core
 import lxml.etree
 import lxml.html
 import os
-import sphinx.directives
 import sys
 import traceback
-import yafowil.loader
-import yafowil.webob
+import yafowil.loader  # register yafowil.  # noqa
+import yafowil.webob  # register yafowil.webob global preprocessor.  # noqa
 
 
 curdir = os.path.dirname(__file__)
