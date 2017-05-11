@@ -11,15 +11,14 @@ from yafowil.controller import Controller
 from yafowil.resources import YafowilResources
 from yafowil.utils import get_example
 from yafowil.utils import get_example_names
-
 import docutils.core
 import lxml.etree
 import lxml.html
 import os
 import sys
 import traceback
-import yafowil.loader  # register yafowil.  # noqa
-import yafowil.webob  # register yafowil.webob global preprocessor.  # noqa
+import yafowil.loader  # noqa
+import yafowil.webob  # noqa
 
 
 curdir = os.path.dirname(__file__)
