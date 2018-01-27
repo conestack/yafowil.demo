@@ -4,6 +4,7 @@
 /.mr.developer.cfg
 /.pydevproject.bak
 /.installed.cfg
+/.vscode/
 /pip-selfcheck.json
 /run.sh
 /buildout.cfg
