@@ -65,10 +65,18 @@ class DocTranslator(HTMLTranslator):
         def warner(msg):
             print('Warning: %s - %s ' % (msg, node.line))
         highlighted = self.highlighter.highlight_block(
-            node.rawsource, lang, warn=warner, linenos=linenos,
-            **highlight_args)
-        starttag = self.starttag(node, 'div', suffix='',
-                                 CLASS='highlight-%s' % lang)
+            node.rawsource,
+            lang,
+            warn=warner,
+            linenos=linenos,
+            **highlight_args
+        )
+        starttag = self.starttag(
+            node,
+            'div',
+            suffix='',
+            CLASS='highlight-%s' % lang
+        )
         self.body.append(starttag + highlighted + '</div>\n')
         raise nodes.SkipNode
 
@@ -88,7 +96,7 @@ def pygments_styles(environ, start_response):
 
 def resource_response(path, environ, start_response, content_type):
     response = Response(content_type=content_type)
-    with open(path) as fd:
+    with open(path, 'rb') as fd:
         response.write(fd.read())
     return response(environ, start_response)
 
@@ -137,7 +145,8 @@ def render_forms(example, environ, plugin_name):
             u'#form',
             name=widget.name,
             props={
-                'action': action})
+                'action': action
+            })
         form[widget.name] = widget
         form['form_actions'] = factory(
             'div',
@@ -153,14 +162,17 @@ def render_forms(example, environ, plugin_name):
                 'action': 'save',
                 'div.class_add': 'col-sm-offset-2 col-sm-10',
                 'handler': handler,
-                'next': lambda req: True})
+                'next': lambda req: True
+            })
         controller = Controller(form, Request(environ))
         if controller.next:
             record['form'] = form()
         else:
             record['form'] = controller.rendered
-        doc_html = docutils.core.publish_string(part['doc'],
-                                                writer=DocWriter())
+        doc_html = docutils.core.publish_string(
+            part['doc'],
+            writer=DocWriter()
+        )
         doc_html = lxml.html.document_fromstring(doc_html)
         doc_html = doc_html.find_class('document')[0]
         doc_html.insert(0, lxml.etree.Element('a', name=widget.name))
@@ -175,8 +187,10 @@ def execute_route(example, route, environ, start_response):
             url = request_uri(environ)
             result = part['routes'][route](url)
             # XXX todo: set headers generic
-            response = Response(content_type='application/json',
-                                body=result['body'])
+            response = Response(
+                content_type='application/json',
+                body=result['body']
+            )
             return response(environ, start_response)
     raise ValueError('No route to: %s' % environ['PATH_INFO'])
 
@@ -203,10 +217,12 @@ def app(environ, start_response):
             resources = get_resources(plugin_name)
             example = get_example(plugin_name)
             if splitted[1] != 'index.html':
-                return execute_route(example,
-                                     splitted[1],
-                                     environ,
-                                     start_response)
+                return execute_route(
+                    example,
+                    splitted[1],
+                    environ,
+                    start_response
+                )
             sections = list()
             for section in example:
                 sections.append({
@@ -221,11 +237,13 @@ def app(environ, start_response):
             forms = None
         templates = PageTemplateLoader(curdir)
         template = templates['main.pt']
-        body = template(resources=resources,
-                        forms=forms,
-                        example_names=sorted(get_example_names()),
-                        sections=sections,
-                        current_name=plugin_name)
+        body = template(
+            resources=resources,
+            forms=forms,
+            example_names=sorted(get_example_names()),
+            sections=sections,
+            current_name=plugin_name
+        )
         return Response(body=body)(environ, start_response)
     except:
         return Response(body=format_traceback())(environ, start_response)
