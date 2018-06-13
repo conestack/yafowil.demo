@@ -189,7 +189,8 @@ def execute_route(example, route, environ, start_response):
             # XXX todo: set headers generic
             response = Response(
                 content_type='application/json',
-                body=result['body']
+                body=result['body'],
+                charset='UTF-8'
             )
             return response(environ, start_response)
     raise ValueError('No route to: %s' % environ['PATH_INFO'])
