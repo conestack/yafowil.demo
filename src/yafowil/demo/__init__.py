@@ -7,6 +7,7 @@ from webob import Request
 from webob import Response
 from wsgiref.util import request_uri
 from yafowil.base import factory
+from yafowil.compat import IS_PY2
 from yafowil.controller import Controller
 from yafowil.resources import YafowilResources
 from yafowil.utils import get_example
@@ -43,7 +44,7 @@ class DocTranslator(HTMLTranslator):
     def __init__(self, *args, **kwds):
         HTMLTranslator.__init__(self, *args, **kwds)
         self.highlightlang = 'python'
-        self.highlightlinenothreshold = sys.maxint
+        self.highlightlinenothreshold = sys.maxint if IS_PY2 else sys.maxsize
         self.highlighter = python_highlighter()
 
     def visit_literal_block(self, node):
@@ -62,7 +63,7 @@ class DocTranslator(HTMLTranslator):
             linenos = node['linenos']
 
         def warner(msg):
-            print 'Warning: %s - %s ' % (msg, node.line)
+            print('Warning: %s - %s ' % (msg, node.line))
         highlighted = self.highlighter.highlight_block(
             node.rawsource, lang, warn=warner, linenos=linenos,
             **highlight_args)
@@ -123,7 +124,7 @@ def dispatch_resource(path, environ, start_response):
 
 
 def dummy_save(widget, data):
-    print data.extracted
+    print(data.extracted)
 
 
 def render_forms(example, environ, plugin_name):
