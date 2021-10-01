@@ -59,4 +59,5 @@ setup(
     entry_points="""
     [yafowil.plugin]
     register = yafowil.demo.loader:register
+    configure = yafowil.demo.loader:configure
     """)

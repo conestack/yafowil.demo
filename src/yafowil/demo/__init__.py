@@ -246,5 +246,5 @@ def app(environ, start_response):
             current_name=plugin_name
         )
         return Response(body=body)(environ, start_response)
-    except:
+    except Exception:
         return Response(body=format_traceback())(environ, start_response)

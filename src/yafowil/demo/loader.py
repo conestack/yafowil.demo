@@ -1,3 +1,4 @@
+from yafowil import bootstrap
 from yafowil.base import factory
 from yafowil.utils import entry_point
 import os
@@ -36,3 +37,7 @@ css = [{
 def register():
     factory.register_theme('bootstrap', 'yafowil.demo',
                            resourcedir, js=js, css=css)
+
+
+def configure():
+    bootstrap.configure_factory('bootstrap')
