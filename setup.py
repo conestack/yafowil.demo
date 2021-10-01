@@ -2,7 +2,7 @@ from setuptools import find_packages
 from setuptools import setup
 
 
-version = '1.2'
+version = '2.0.dev0'
 shortdesc = 'YAFOWIL - Demo Application'
 longdesc = ""
 
@@ -29,16 +29,17 @@ setup(
     include_package_data=True,
     zip_safe=True,
     install_requires=[
-        'setuptools',
-        'sphinx',
         'Chameleon',
         'docutils',
+        'setuptools',
+        'sphinx',
         'yafowil',
-        'yafowil.webob',
-        'yafowil.yaml',
         'yafowil.bootstrap',
+        'yafowil.webob',
         # add-on widgets
         # 'yafowil.widget.alohaeditor',
+        # 'yafowil.widget.dynatree',
+        # 'yafowil.widget.recaptcha',
         'yafowil.widget.ace',
         'yafowil.widget.array',
         'yafowil.widget.autocomplete',
@@ -46,15 +47,14 @@ setup(
         'yafowil.widget.cron',
         'yafowil.widget.datetime',
         'yafowil.widget.dict',
-        # 'yafowil.widget.dynatree',
         'yafowil.widget.image',
         'yafowil.widget.location',
         'yafowil.widget.multiselect',
-        # 'yafowil.widget.recaptcha',
         'yafowil.widget.richtext',
         'yafowil.widget.select2',
         'yafowil.widget.slider',
         'yafowil.widget.wysihtml5',
+        'yafowil.yaml',
     ],
     entry_points="""
     [yafowil.plugin]
