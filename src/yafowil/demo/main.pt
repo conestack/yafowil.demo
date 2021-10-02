@@ -10,10 +10,6 @@
     <title>YAFOWIL Examples - ${current_name or 'Main'}</title>
     <link rel="shortcut icon" href="/favicon.ico" />
 
-    <tal:js repeat="res resources['js']">
-      <script src="${res}"></script>
-    </tal:js>
-
     <link href="/pygments.css"
           rel="stylesheet"
           type="text/css"
@@ -25,6 +21,10 @@
             type="text/css"
             media="all" />
     </tal:css>
+
+    <tal:js repeat="res resources['js']">
+      <script src="${res}"></script>
+    </tal:js>
 
   </head>
 
