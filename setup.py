@@ -30,7 +30,6 @@ setup(
     zip_safe=True,
     install_requires=[
         'Chameleon',
-        'docutils',
         'setuptools',
         'sphinx',
         'yafowil',
@@ -44,6 +43,7 @@ setup(
         'yafowil.widget.array',
         'yafowil.widget.autocomplete',
         'yafowil.widget.chosen',
+        'yafowil.widget.color',
         'yafowil.widget.cron',
         'yafowil.widget.datetime',
         'yafowil.widget.dict',
