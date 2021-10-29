@@ -9,22 +9,22 @@ resourcedir = os.path.join(os.path.dirname(__file__), 'resources')
 
 js = [{
     'group': 'yafowil.demo.dependencies',
-    'resource': 'jquery-1.9.1.js',
+    'resource': 'jquery-3.6.0.min.js',
     'order': 10,
 }, {
     'group': 'yafowil.demo.dependencies',
-    'resource': 'jquery.migrate-1.2.1.js',
+    'resource': 'jquery.migrate-3.3.2.min.js',
     'order': 10,
 }, {
     'group': 'yafowil.demo.dependencies',
-    'resource': 'jqueryui/jquery-ui-1.10.3.custom.js',
+    'resource': 'jqueryui/jquery-ui.min.js',
     'order': 10,
 }]
 
 
 css = [{
     'group': 'yafowil.demo.dependencies',
-    'resource': 'jqueryui/jquery-ui-1.10.3.custom.css',
+    'resource': 'jqueryui/jquery-ui.min.css',
     'order': 10,
 }, {
     'group': 'yafowil.demo.common',
