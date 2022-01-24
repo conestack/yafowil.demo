@@ -53,6 +53,7 @@ setup(
         'yafowil.widget.richtext',
         'yafowil.widget.select2',
         'yafowil.widget.slider',
+        'yafowil.widget.tiptap',
         'yafowil.widget.wysihtml5',
         'yafowil.yaml',
     ],
