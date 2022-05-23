@@ -55,10 +55,11 @@ setup(
         'yafowil.widget.slider',
         'yafowil.widget.tiptap',
         'yafowil.widget.wysihtml5',
-        'yafowil.yaml',
+        'yafowil.yaml'
     ],
     entry_points="""
     [yafowil.plugin]
     register = yafowil.demo.loader:register
     configure = yafowil.demo.loader:configure
-    """)
+    """
+)
