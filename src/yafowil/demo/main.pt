@@ -26,6 +26,11 @@
       <script src="${res}"></script>
     </tal:js>
 
+    <!--
+    <tal:styles replace="structure styles" />
+    <tal:scripts replace="structure scripts" />
+    -->
+
   </head>
 
   <body>

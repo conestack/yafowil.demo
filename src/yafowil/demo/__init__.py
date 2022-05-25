@@ -18,6 +18,7 @@ import lxml.html
 import os
 import sys
 import traceback
+import webresource as wr
 import yafowil.loader  # noqa
 import yafowil.webob  # noqa
 
@@ -117,6 +118,22 @@ def get_resources(current_plugin_name=None):
     for css in resources.css_resources:
         ret['css'].append(css)
     return ret
+
+
+def rendered_resources(resources):
+    for member in resources.members:
+        member.path = '++resource++{}'.format(member.path)
+    resolver = wr.ResourceResolver(resources)
+    renderer = wr.ResourceRenderer(resolver, base_url='')
+    return renderer.render()
+
+
+def rendered_scripts():
+    return rendered_resources(factory.script_resources())
+
+
+def rendered_styles():
+    return rendered_resources(factory.style_resources())
 
 
 def dispatch_resource(path, environ, start_response):
@@ -239,6 +256,8 @@ def app(environ, start_response):
         templates = PageTemplateLoader(curdir)
         template = templates['main.pt']
         body = template(
+            scripts=rendered_scripts(),
+            styles=rendered_styles(),
             resources=resources,
             forms=forms,
             example_names=sorted(get_example_names()),
