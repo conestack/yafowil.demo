@@ -111,13 +111,16 @@ class Resources(YafowilResources):
 resources = Resources()
 
 
-def get_resources(current_plugin_name=None):
-    ret = dict(js=list(), css=list())
-    for js in resources.js_resources:
-        ret['js'].append(js)
-    for css in resources.css_resources:
-        ret['css'].append(css)
-    return ret
+# def get_resources(current_plugin_name=None):
+#     ret = dict(js=list(), css=list())
+#     for js in resources.js_resources:
+#         ret['js'].append(js)
+#     for css in resources.css_resources:
+#         ret['css'].append(css)
+#     return ret
+
+
+resource_directories = {}
 
 
 def rendered_resources(resources):
@@ -232,7 +235,7 @@ def app(environ, start_response):
         if path.startswith('++widget++'):
             splitted = path.split('/')
             plugin_name = splitted[0][10:]
-            resources = get_resources(plugin_name)
+            #resources = get_resources(plugin_name)
             example = get_example(plugin_name)
             if splitted[1] != 'index.html':
                 return execute_route(
@@ -250,7 +253,7 @@ def app(environ, start_response):
             forms = render_forms(example, environ, plugin_name)
         else:
             plugin_name = None
-            resources = get_resources()
+            #resources = get_resources()
             sections = list()
             forms = None
         templates = PageTemplateLoader(curdir)
@@ -258,7 +261,7 @@ def app(environ, start_response):
         body = template(
             scripts=rendered_scripts(),
             styles=rendered_styles(),
-            resources=resources,
+            #resources=resources,
             forms=forms,
             example_names=sorted(get_example_names()),
             sections=sections,
