@@ -9,7 +9,6 @@ from wsgiref.util import request_uri
 from yafowil.base import factory
 from yafowil.compat import IS_PY2
 from yafowil.controller import Controller
-from yafowil.resources import YafowilResources
 from yafowil.utils import get_example
 from yafowil.utils import get_example_names
 import docutils.core
@@ -65,6 +64,7 @@ class DocTranslator(HTMLTranslator):
 
         def warner(msg):
             print('Warning: %s - %s ' % (msg, node.line))
+
         highlighted = self.highlighter.highlight_block(
             node.rawsource,
             lang,
@@ -95,60 +95,60 @@ def pygments_styles(environ, start_response):
     return response(environ, start_response)
 
 
+_file_cache = {}
+
+
 def resource_response(path, environ, start_response, content_type):
     response = Response(content_type=content_type)
-    with open(path, 'rb') as fd:
-        response.write(fd.read())
+    if path not in _file_cache:
+        with open(path, 'rb') as fd:
+            _file_cache[path] = fd.read()
+    response.write(_file_cache[path])
     return response(environ, start_response)
 
 
-class Resources(YafowilResources):
-
-    def configure_resource_directory(self, plugin_name, resourc_edir):
-        return '/++resource++%s' % plugin_name
+directory_map = {}
+_resources = None
 
 
-resources = Resources()
-
-
-# def get_resources(current_plugin_name=None):
-#     ret = dict(js=list(), css=list())
-#     for js in resources.js_resources:
-#         ret['js'].append(js)
-#     for css in resources.css_resources:
-#         ret['css'].append(css)
-#     return ret
-
-
-resource_directories = {}
+def get_resources():
+    global _resources
+    if _resources is not None:
+        return _resources
+    _resources = factory.get_resources()
+    for group in _resources.members:
+        directory_map['++resource++{}'.format(group.path)] = group.directory
+    for script in _resources.scripts:
+        script.path = '++resource++{}'.format(script.path)
+    for style in _resources.styles:
+        style.path = '++resource++{}'.format(style.path)
+    return _resources
 
 
 def rendered_resources(resources):
-    for member in resources.members:
-        member.path = '++resource++{}'.format(member.path)
     resolver = wr.ResourceResolver(resources)
     renderer = wr.ResourceRenderer(resolver, base_url='')
     return renderer.render()
 
 
 def rendered_scripts():
-    return rendered_resources(factory.script_resources())
+    return rendered_resources(get_resources().scripts)
 
 
 def rendered_styles():
-    return rendered_resources(factory.style_resources())
+    return rendered_resources(get_resources().styles)
 
 
 def dispatch_resource(path, environ, start_response):
-    plugin_name = path.split('/')[0][12:]
-    resources = factory.resources_for(plugin_name)
-    filepath = os.path.join(resources['resourcedir'], *path.split('/')[1:])
+    base_path = path.split('/')[0]
+    rel_path = os.path.join(*path.split('/')[1:])
+    file_path = os.path.join(directory_map[base_path], rel_path)
     ct = 'text/plain'
     for key in CTMAP:
         if path.endswith(key):
             ct = CTMAP[key]
             break
-    return resource_response(filepath, environ, start_response, ct)
+    return resource_response(file_path, environ, start_response, ct)
 
 
 def dummy_save(widget, data):
@@ -226,8 +226,10 @@ def app(environ, start_response):
     try:
         path = environ['PATH_INFO'].strip('/')
         if path == 'favicon.ico':
-            return dispatch_resource('++resource++yafowil.demo/favicon.ico',
-                                     environ, start_response)
+            return dispatch_resource(
+                '++resource++yafowil-demo/favicon.ico',
+                environ, start_response
+            )
         if path == 'pygments.css':
             return pygments_styles(environ, start_response)
         if path.startswith('++resource++'):
@@ -235,7 +237,6 @@ def app(environ, start_response):
         if path.startswith('++widget++'):
             splitted = path.split('/')
             plugin_name = splitted[0][10:]
-            #resources = get_resources(plugin_name)
             example = get_example(plugin_name)
             if splitted[1] != 'index.html':
                 return execute_route(
@@ -253,7 +254,6 @@ def app(environ, start_response):
             forms = render_forms(example, environ, plugin_name)
         else:
             plugin_name = None
-            #resources = get_resources()
             sections = list()
             forms = None
         templates = PageTemplateLoader(curdir)
@@ -261,7 +261,6 @@ def app(environ, start_response):
         body = template(
             scripts=rendered_scripts(),
             styles=rendered_styles(),
-            #resources=resources,
             forms=forms,
             example_names=sorted(get_example_names()),
             sections=sections,

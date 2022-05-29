@@ -15,19 +15,6 @@
           type="text/css"
           media="all" />
 
-    <!--
-    <tal:css repeat="res resources['css']">
-      <link href="${res}"
-            rel="stylesheet"
-            type="text/css"
-            media="all" />
-    </tal:css>
-
-    <tal:js repeat="res resources['js']">
-      <script src="${res}"></script>
-    </tal:js>
-    -->
-
     <tal:styles replace="structure styles" />
     <tal:scripts replace="structure scripts" />
 
@@ -98,7 +85,7 @@
 
           <div tal:condition="not forms">
             <img class="yafowil-logo"
-                 src="/++resource++yafowil.demo/yafowil.png" 
+                 src="/++resource++yafowil-demo/yafowil.png"
                  alt="yafowil logo" 
                  title="yafowil - declarative forms" />
             <p>
