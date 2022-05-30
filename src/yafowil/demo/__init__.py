@@ -107,22 +107,34 @@ def resource_response(path, environ, start_response, content_type):
     return response(environ, start_response)
 
 
+group_map = {}
 directory_map = {}
-_resources = None
+resources_loaded = False
 
 
-def get_resources():
-    global _resources
-    if _resources is not None:
-        return _resources
-    _resources = factory.get_resources()
-    for group in _resources.members:
+def load_resources():
+    global resources_loaded
+    if resources_loaded:
+        return
+    resources = factory.get_resources()
+    for group in resources.members:
+        group_map[group.name] = group
         directory_map['++resource++{}'.format(group.path)] = group.directory
-    for script in _resources.scripts:
+    for script in resources.scripts:
         script.path = '++resource++{}'.format(script.path)
-    for style in _resources.styles:
+    for style in resources.styles:
         style.path = '++resource++{}'.format(style.path)
-    return _resources
+    resources_loaded = True
+
+
+def get_resources(widget_name=None):
+    load_resources()
+    group = wr.ResourceGroup()
+    group.add(group_map['yafowil.demo'])
+    group.add(group_map['yafowil.bootstrap'])
+    if widget_name not in [None, 'yafowil']:
+        group.add(group_map[widget_name])
+    return group
 
 
 def rendered_resources(resources):
@@ -131,12 +143,12 @@ def rendered_resources(resources):
     return renderer.render()
 
 
-def rendered_scripts():
-    return rendered_resources(get_resources().scripts)
+def rendered_scripts(widget_name=None):
+    return rendered_resources(get_resources(widget_name).scripts)
 
 
-def rendered_styles():
-    return rendered_resources(get_resources().styles)
+def rendered_styles(widget_name=None):
+    return rendered_resources(get_resources(widget_name).styles)
 
 
 def dispatch_resource(path, environ, start_response):
@@ -155,12 +167,12 @@ def dummy_save(widget, data):
     print(data.extracted)
 
 
-def render_forms(example, environ, plugin_name):
+def render_forms(example, environ, widget_name):
     result = []
     for part in example:
         record = {}
         widget = part['widget']
-        action = '/++widget++%s/index.html#%s' % (plugin_name, widget.name)
+        action = '/++widget++%s/index.html#%s' % (widget_name, widget.name)
         form = factory(
             u'#form',
             name=widget.name,
@@ -236,8 +248,8 @@ def app(environ, start_response):
             return dispatch_resource(path, environ, start_response)
         if path.startswith('++widget++'):
             splitted = path.split('/')
-            plugin_name = splitted[0][10:]
-            example = get_example(plugin_name)
+            widget_name = splitted[0][10:]
+            example = get_example(widget_name)
             if splitted[1] != 'index.html':
                 return execute_route(
                     example,
@@ -251,20 +263,20 @@ def app(environ, start_response):
                     'id': section['widget'].name,
                     'title': section.get('title', section['widget'].name),
                 })
-            forms = render_forms(example, environ, plugin_name)
+            forms = render_forms(example, environ, widget_name)
         else:
-            plugin_name = None
+            widget_name = None
             sections = list()
             forms = None
         templates = PageTemplateLoader(curdir)
         template = templates['main.pt']
         body = template(
-            scripts=rendered_scripts(),
-            styles=rendered_styles(),
+            scripts=rendered_scripts(widget_name),
+            styles=rendered_styles(widget_name),
             forms=forms,
             example_names=sorted(get_example_names()),
             sections=sections,
-            current_name=plugin_name
+            current_name=widget_name
         )
         return Response(body=body)(environ, start_response)
     except Exception:
