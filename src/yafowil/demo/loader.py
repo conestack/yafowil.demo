@@ -12,8 +12,6 @@ resources_dir = os.path.join(os.path.dirname(__file__), 'resources')
 # Default
 ##############################################################################
 
-# webresource ################################################################
-
 resources = wr.ResourceGroup(
     name='yafowil.demo',
     directory=resources_dir,
@@ -29,19 +27,6 @@ resources.add(wr.StyleResource(
     resource='yafowil.demo.css'
 ))
 
-# B/C resources ##############################################################
-
-js = [{
-    'group': 'yafowil.demo.dependencies',
-    'resource': 'jquery-3.6.0.js',
-    'order': 10,
-}]
-css = [{
-    'group': 'yafowil.demo.common',
-    'resource': 'yafowil.demo.css',
-    'order': 20,
-}]
-
 
 ##############################################################################
 # Registration
@@ -49,16 +34,7 @@ css = [{
 
 @entry_point(order=10)
 def register():
-    widget_name = 'yafowil.demo'
-
-    factory.register_theme(
-        'bootstrap3',
-        widget_name,
-        resources_dir,
-        js=js,
-        css=css
-    )
-    factory.register_resources('bootstrap3', widget_name, resources)
+    factory.register_resources('bootstrap3', 'yafowil.demo', resources)
 
 
 ##############################################################################
