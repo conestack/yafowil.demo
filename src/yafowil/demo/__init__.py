@@ -20,6 +20,7 @@ import traceback
 import webresource as wr
 import yafowil.loader  # noqa
 import yafowil.webob  # noqa
+import treibstoff # noqa
 
 
 curdir = os.path.dirname(__file__)
@@ -130,10 +131,16 @@ def load_resources():
 def get_resources(widget_name=None):
     load_resources()
     group = wr.ResourceGroup()
+    group.add(group_map['treibstoff'])
     group.add(group_map['yafowil.demo'])
     group.add(group_map['yafowil.bootstrap'])
-    if widget_name not in [None, 'yafowil']:
-        group.add(group_map[widget_name])
+    if isinstance(widget_name, list):
+        for name in widget_name:
+            if name not in [None, 'yafowil']:
+                group.add(group_map[name])
+    else:
+        if widget_name not in [None, 'yafowil']:
+            group.add(group_map[widget_name])
     return group
 
 
@@ -144,6 +151,26 @@ def rendered_resources(resources):
 
 
 def rendered_scripts(widget_name=None):
+    # provide resources for use of other widgets in yafowil.widget.array
+    if widget_name == 'yafowil.widget.array':
+        widget_name = [
+            'yafowil.widget.ace',
+            'yafowil.widget.array',
+            # 'yafowil.widget.autocomplete',
+            'yafowil.widget.color',
+            'yafowil.widget.chosen',
+            'yafowil.widget.cron',
+            'yafowil.widget.datetime',
+            # 'yafowil.widget.dict',
+            'yafowil.widget.image',
+            'yafowil.widget.location',
+            'yafowil.widget.multiselect',
+            'yafowil.widget.richtext',
+            'yafowil.widget.select2',
+            'yafowil.widget.slider',
+            'yafowil.widget.tiptap',
+            'yafowil.widget.wysihtml5',
+        ]
     return rendered_resources(get_resources(widget_name).scripts)
 
 
