@@ -175,6 +175,26 @@ def rendered_scripts(widget_name=None):
 
 
 def rendered_styles(widget_name=None):
+    # provide resources for use of other widgets in yafowil.widget.array
+    if widget_name == 'yafowil.widget.array':
+        widget_name = [
+            'yafowil.widget.ace',
+            'yafowil.widget.array',
+            # 'yafowil.widget.autocomplete',
+            'yafowil.widget.color',
+            'yafowil.widget.chosen',
+            'yafowil.widget.cron',
+            'yafowil.widget.datetime',
+            # 'yafowil.widget.dict',
+            'yafowil.widget.image',
+            'yafowil.widget.location',
+            'yafowil.widget.multiselect',
+            'yafowil.widget.richtext',
+            'yafowil.widget.select2',
+            'yafowil.widget.slider',
+            'yafowil.widget.tiptap',
+            'yafowil.widget.wysihtml5',
+        ]
     return rendered_resources(get_resources(widget_name).styles)
 
 
