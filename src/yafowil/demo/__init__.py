@@ -156,7 +156,7 @@ def rendered_scripts(widget_name=None):
         widget_name = [
             'yafowil.widget.ace',
             'yafowil.widget.array',
-            # 'yafowil.widget.autocomplete',
+            'yafowil.widget.autocomplete',
             'yafowil.widget.color',
             'yafowil.widget.chosen',
             'yafowil.widget.cron',
@@ -180,7 +180,7 @@ def rendered_styles(widget_name=None):
         widget_name = [
             'yafowil.widget.ace',
             'yafowil.widget.array',
-            # 'yafowil.widget.autocomplete',
+            'yafowil.widget.autocomplete',
             'yafowil.widget.color',
             'yafowil.widget.chosen',
             'yafowil.widget.cron',
