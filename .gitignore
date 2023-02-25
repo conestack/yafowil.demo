@@ -24,3 +24,5 @@
 /coverage/
 /lib64
 /pyvenv.cfg
+/portal.db/
+/node_modules/

@@ -3,6 +3,7 @@ from yafowil.base import factory
 from yafowil.utils import entry_point
 import os
 import webresource as wr
+import treibstoff
 
 
 resources_dir = os.path.join(os.path.dirname(__file__), 'resources')
@@ -26,6 +27,7 @@ resources.add(wr.StyleResource(
     name='yafowil-demo-css',
     resource='yafowil.demo.css'
 ))
+ts_resources = treibstoff.resources.copy()
 
 
 ##############################################################################
@@ -35,6 +37,7 @@ resources.add(wr.StyleResource(
 @entry_point(order=10)
 def register():
     factory.register_resources('bootstrap3', 'yafowil.demo', resources)
+    factory.register_resources('bootstrap3', 'treibstoff', ts_resources)
 
 
 ##############################################################################
