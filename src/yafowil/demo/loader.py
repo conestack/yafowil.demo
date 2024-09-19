@@ -36,8 +36,8 @@ ts_resources = treibstoff.resources.copy()
 
 @entry_point(order=10)
 def register():
-    factory.register_resources('bootstrap3', 'yafowil.demo', resources)
-    factory.register_resources('bootstrap3', 'treibstoff', ts_resources)
+    factory.register_resources('bootstrap5', 'yafowil.demo', resources)
+    factory.register_resources('bootstrap5', 'treibstoff', ts_resources)
 
 
 ##############################################################################
@@ -45,4 +45,4 @@ def register():
 ##############################################################################
 
 def configure():
-    bootstrap.configure_factory('bootstrap3')
+    bootstrap.configure_factory('bootstrap5')
