@@ -34,7 +34,7 @@
 
     <div class="navbar navbar-inverse navbar-top">
       <div class="container">
-        <div class="navbar-header">
+        <div class="navbar-header d-flex align-items-center">
           <a href="/" class="navbar-brand">
             YAFOWIL Examples
             <span tal:condition="current_name">
@@ -44,6 +44,17 @@
           <span class="navbar-text navbar-version pull-left">
             <b>2.3</b>
           </span>
+
+          <div id="colortoggler"
+               tal:condition="theme == 'bootstrap5'"
+               class="nav-item dropdown d-flex align-items-center h-100 my-1 my-sm-0 form-check form-switch">
+            <i class="bi-sun-fill me-2"></i>
+            <div class="form-check form-switch m-0 d-inline-block">
+              <input class="form-check-input" type="checkbox" id="colortoggle-switch">
+            </div>
+            <i class="bi-moon-fill"></i>
+          </div>
+
         </div>
       </div>
     </div>

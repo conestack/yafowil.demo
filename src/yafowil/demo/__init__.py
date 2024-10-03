@@ -323,7 +323,8 @@ def app(environ, start_response):
             forms=forms,
             example_names=sorted(get_example_names()),
             sections=sections,
-            current_name=widget_name
+            current_name=widget_name,
+            theme=factory.theme
         )
         return Response(body=body)(environ, start_response)
     except Exception:
