@@ -143,9 +143,9 @@ var yafowil_colortoggle = (function (exports, $) {
         }
     }
 
-    $(function() {
-        new ColorMode();
+    new ColorMode();
 
+    $(function() {
         ts.ajax.register(ColorToggler.initialize, true);
     });
 
