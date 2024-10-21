@@ -10,7 +10,8 @@
     <title>YAFOWIL Examples - ${current_name or 'Main'}</title>
     <link rel="shortcut icon" href="/favicon.ico" />
 
-    <link href="/pygments.css"
+    <link id="pygments-style"
+          href="/pygments.css"
           rel="stylesheet"
           type="text/css"
           media="all" />

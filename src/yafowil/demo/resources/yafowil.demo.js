@@ -63,6 +63,10 @@ var yafowil_colortoggle = (function (exports, $) {
             } else {
                 elem.setAttribute('data-bs-theme', theme);
             }
+
+            // customized for yafowil.demo pygments styles
+            const href = `/pygments.css?theme=${theme}`;
+            document.getElementById('pygments-style').setAttribute('href', href);
         }
 
         /**

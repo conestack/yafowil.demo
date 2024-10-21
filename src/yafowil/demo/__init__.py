@@ -91,9 +91,15 @@ class DocWriter(Writer):
 
 
 def pygments_styles(environ, start_response):
-    response = Response(content_type='text/css')
-    response.write(python_highlighter().get_stylesheet())
-    return response(environ, start_response)
+    theme = environ['QUERY_STRING'].split('=')[-1] if 'theme=' in environ['QUERY_STRING'] else 'light'
+    if theme == 'dark':
+        pygments_bridge = PygmentsBridge('html', 'material', False)
+    else:
+        pygments_bridge = PygmentsBridge('html', 'default', False)
+    response_body = pygments_bridge.get_stylesheet()
+
+    # Return CSS response
+    return Response(body=response_body, content_type='text/css')(environ, start_response)
 
 
 _file_cache = {}
