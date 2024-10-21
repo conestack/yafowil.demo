@@ -33,6 +33,7 @@ CTMAP = {
     '.gif': 'image/gif',
     '.jpg': 'image/jpeg',
     '.ico': 'image/x-icon',
+    '.svg': 'image/svg+xml',
 }
 
 

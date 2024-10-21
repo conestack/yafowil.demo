@@ -23,19 +23,10 @@
 
   <body>
 
-    <a href="https://github.com/conestack/${current_name or 'yafowil.demo'}">
-      <img style="position:absolute;
-                  top:40px;
-                  right:0;
-                  border:0;"
-           src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"
-           alt="Fork me on GitHub"
-           title="Fork ${current_name or 'yafowil.demo'} on GitHub">
-    </a>
-
-    <div class="navbar navbar-inverse navbar-top">
+    <div class="navbar navbar-inverse navbar-top sticky-top border-bottom
+                bg-body-tertiary mb-4">
       <div class="container">
-        <div class="navbar-header d-flex align-items-center">
+        <div class="navbar-header d-flex w-100 align-items-center">
           <a href="/" class="navbar-brand">
             YAFOWIL Examples
             <span tal:condition="current_name">
@@ -56,6 +47,15 @@
             <i class="bi-moon-fill"></i>
           </div>
 
+          <a href="https://github.com/conestack/${current_name or 'yafowil.demo'}"
+             class="text-decoration-none ms-auto text-primary p-1"
+             target="_blank">
+            <h5 class="m-0">
+                <i class="bi bi-github"></i>
+                Fork me on Github
+            </h5>
+
+          </a>
         </div>
       </div>
     </div>
@@ -96,7 +96,7 @@
           </div>
 
           <div tal:condition="not forms">
-            <img class="yafowil-logo"
+            <img class="yafowil-logo bg-white mb-4"
                  src="/++resource++yafowil-demo/yafowil.png"
                  alt="yafowil logo" 
                  title="yafowil - declarative forms" />

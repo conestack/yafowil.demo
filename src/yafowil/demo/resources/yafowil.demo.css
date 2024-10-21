@@ -30,3 +30,6 @@ div.code div.highlight pre {
 .content-wrapper .example-form:not(:first-of-type) div.document > h1.title {
     margin-top: 2rem;
 }
+.yafowil-logo {
+    padding: 0 1rem 0 0;
+}
