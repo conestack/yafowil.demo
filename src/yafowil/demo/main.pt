@@ -48,7 +48,7 @@
           </div>
 
           <a href="https://github.com/conestack/${current_name or 'yafowil.demo'}"
-             class="text-decoration-none ms-auto text-primary p-1"
+             class="text-decoration-none ms-auto text-primary p-1 link-to-github"
              target="_blank">
             <h5 class="m-0">
                 <i class="bi bi-github"></i>
@@ -65,7 +65,7 @@
 
         <div class="col-md-3">
 
-          <ul class="list-group">
+          <ul class="list-group doc-tree">
             <li class="list-group-item active">Packages</li>
             <tal:li repeat="example_name example_names">
               <li class="list-group-item ${' list-group-item-warning' if current_name==example_name else ''}">
