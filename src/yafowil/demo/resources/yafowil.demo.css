@@ -27,3 +27,6 @@ div.code div.highlight {
 div.code div.highlight pre {
     margin-bottom: 0;
 }
+.content-wrapper .example-form:not(:first-of-type) div.document > h1.title {
+    margin-top: 2rem;
+}
