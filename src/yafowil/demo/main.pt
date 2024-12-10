@@ -137,4 +137,8 @@
     </div>
   </body>
 
+  <!-- yafowil.widget.autocomplete -->
+  <script>
+    window.hello_world = () => {alert('Hello World!')}
+  </script>
 </html>
