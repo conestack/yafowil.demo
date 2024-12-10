@@ -139,6 +139,23 @@
 
   <!-- yafowil.widget.autocomplete -->
   <script>
-    window.hello_world = () => {alert('Hello World!')}
+    window.yafowil_demo = {
+        CustomSuggestion: class CustomSuggestion extends window.yafowil_autocomplete.AutocompleteSuggestion {
+
+            constructor(widget, source, val) {
+                super(widget, source, val);
+            }
+
+            select() {
+                super.select();
+                alert('The Suggestion has been selected.');
+            }
+
+            compile() {
+                super.compile();
+                this.elem.css('background-color', '#ffe00057');
+            }
+        }
+    }
   </script>
 </html>
