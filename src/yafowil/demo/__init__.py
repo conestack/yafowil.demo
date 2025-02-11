@@ -165,18 +165,14 @@ def rendered_scripts(widget_name=None):
             'yafowil.widget.array',
             'yafowil.widget.autocomplete',
             'yafowil.widget.color',
-            'yafowil.widget.chosen',
             'yafowil.widget.cron',
             'yafowil.widget.datetime',
             'yafowil.widget.dict',
             'yafowil.widget.image',
             'yafowil.widget.location',
-            'yafowil.widget.multiselect',
-            'yafowil.widget.richtext',
             'yafowil.widget.select2',
             'yafowil.widget.slider',
             'yafowil.widget.tiptap',
-            'yafowil.widget.wysihtml5',
         ]
     return rendered_resources(get_resources(widget_name).scripts)
 
@@ -189,18 +185,14 @@ def rendered_styles(widget_name=None):
             'yafowil.widget.array',
             'yafowil.widget.autocomplete',
             'yafowil.widget.color',
-            'yafowil.widget.chosen',
             'yafowil.widget.cron',
             'yafowil.widget.datetime',
             'yafowil.widget.dict',
             'yafowil.widget.image',
             'yafowil.widget.location',
-            'yafowil.widget.multiselect',
-            'yafowil.widget.richtext',
             'yafowil.widget.select2',
             'yafowil.widget.slider',
             'yafowil.widget.tiptap',
-            'yafowil.widget.wysihtml5',
         ]
     return rendered_resources(get_resources(widget_name).styles)
 
