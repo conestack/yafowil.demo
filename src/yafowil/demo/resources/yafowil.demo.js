@@ -1,3 +1,24 @@
+if (window.yafowil_autocomplete) {
+    window.yafowil_demo = {
+        CustomSuggestion: class CustomSuggestion extends window.yafowil_autocomplete.AutocompleteSuggestion {
+    
+            constructor(widget, source, val) {
+                super(widget, source, val);
+            }
+    
+            select() {
+                super.select();
+                alert('The Suggestion has been selected.');
+            }
+    
+            compile() {
+                super.compile();
+                this.elem.css('background-color', '#ffe00057');
+            }
+        }
+    }
+}
+
 var yafowil_colortoggle = (function (exports, $) {
     'use strict';
 
