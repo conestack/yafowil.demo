@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "yafowil.demo"
+version = "1.2"
+description = "YAFOWIL - Demo Application"
+readme = "README.rst"
+license = {text = "Simplified BSD and CC-BY-SA"}
+authors = [{name = "Yafowil Contributors", email = "dev@conestack.org"}]
+keywords = ["html", "input", "widgets", "form", "compound"]
+classifiers = [
+    "License :: OSI Approved :: Python Software Foundation License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Topic :: Software Development",
+]
+dependencies = [
+    "sphinx",
+    "Chameleon",
+    "docutils",
+    "yafowil",
+    "yafowil.webob",
+    "yafowil.yaml",
+    "yafowil.bootstrap",
+    "yafowil.widget.alohaeditor",
+    "yafowil.widget.ace",
+    "yafowil.widget.array",
+    "yafowil.widget.autocomplete",
+    "yafowil.widget.chosen",
+    "yafowil.widget.cron",
+    "yafowil.widget.datetime",
+    "yafowil.widget.dict",
+    "yafowil.widget.dynatree",
+    "yafowil.widget.image",
+    "yafowil.widget.location",
+    "yafowil.widget.multiselect",
+    "yafowil.widget.recaptcha",
+    "yafowil.widget.richtext",
+    "yafowil.widget.select2",
+    "yafowil.widget.slider",
+    "yafowil.widget.wysihtml5",
+]
+
+[project.entry-points."yafowil.plugin"]
+register = "yafowil.demo.loader:register"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools]
+zip-safe = true
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.zest-releaser]
+create-wheel = true
