@@ -1,0 +1,42 @@
+body {
+    padding-bottom:44px;
+    overflow-y:scroll;
+}
+.navbar-top {
+    border-radius:0;
+    border-width:0 0 1px;
+}
+.list-group-item .list-unstyled {
+    margin-left:1em;
+    margin-top:0.4em;
+}
+.list-group-item .list-unstyled li {
+    padding-bottom:0.25em;
+}
+footer p {
+    margin:12px;
+}
+div.code {
+    margin-bottom: 1rem;
+}
+div.code div.highlight {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+}
+div.code div.highlight pre {
+    margin-bottom: 0;
+}
+.content-wrapper .example-form:not(:first-of-type) div.document > h1.title {
+    margin-top: 2rem;
+}
+.yafowil-logo {
+    padding: 0 1rem 0 0;
+}
+.doc-tree a {
+    text-decoration: none;
+    color: var(--bs-body-color);
+}
+.doc-tree a:hover {
+    color: var(--bs-primary);
+}

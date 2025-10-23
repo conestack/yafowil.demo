@@ -20,6 +20,7 @@ import traceback
 import webresource as wr
 import yafowil.loader  # noqa
 import yafowil.webob  # noqa
+import treibstoff # noqa
 
 
 curdir = os.path.dirname(__file__)
@@ -32,6 +33,7 @@ CTMAP = {
     '.gif': 'image/gif',
     '.jpg': 'image/jpeg',
     '.ico': 'image/x-icon',
+    '.svg': 'image/svg+xml',
 }
 
 
@@ -90,9 +92,15 @@ class DocWriter(Writer):
 
 
 def pygments_styles(environ, start_response):
-    response = Response(content_type='text/css')
-    response.write(python_highlighter().get_stylesheet())
-    return response(environ, start_response)
+    theme = environ['QUERY_STRING'].split('=')[-1] if 'theme=' in environ['QUERY_STRING'] else 'light'
+    if theme == 'dark':
+        pygments_bridge = PygmentsBridge('html', 'material', False)
+    else:
+        pygments_bridge = PygmentsBridge('html', 'default', False)
+    response_body = pygments_bridge.get_stylesheet()
+
+    # Return CSS response
+    return Response(body=response_body, content_type='text/css')(environ, start_response)
 
 
 _file_cache = {}
@@ -130,10 +138,16 @@ def load_resources():
 def get_resources(widget_name=None):
     load_resources()
     group = wr.ResourceGroup()
+    group.add(group_map['treibstoff'])
     group.add(group_map['yafowil.demo'])
     group.add(group_map['yafowil.bootstrap'])
-    if widget_name not in [None, 'yafowil']:
-        group.add(group_map[widget_name])
+    if isinstance(widget_name, list):
+        for name in widget_name:
+            if name not in [None, 'yafowil']:
+                group.add(group_map[name])
+    else:
+        if widget_name not in [None, 'yafowil']:
+            group.add(group_map[widget_name])
     return group
 
 
@@ -144,10 +158,42 @@ def rendered_resources(resources):
 
 
 def rendered_scripts(widget_name=None):
+    # provide resources for use of other widgets in yafowil.widget.array
+    if widget_name == 'yafowil.widget.array':
+        widget_name = [
+            'yafowil.widget.ace',
+            'yafowil.widget.array',
+            'yafowil.widget.autocomplete',
+            'yafowil.widget.color',
+            'yafowil.widget.cron',
+            'yafowil.widget.datetime',
+            'yafowil.widget.dict',
+            'yafowil.widget.image',
+            'yafowil.widget.location',
+            'yafowil.widget.select2',
+            'yafowil.widget.slider',
+            'yafowil.widget.tiptap',
+        ]
     return rendered_resources(get_resources(widget_name).scripts)
 
 
 def rendered_styles(widget_name=None):
+    # provide resources for use of other widgets in yafowil.widget.array
+    if widget_name == 'yafowil.widget.array':
+        widget_name = [
+            'yafowil.widget.ace',
+            'yafowil.widget.array',
+            'yafowil.widget.autocomplete',
+            'yafowil.widget.color',
+            'yafowil.widget.cron',
+            'yafowil.widget.datetime',
+            'yafowil.widget.dict',
+            'yafowil.widget.image',
+            'yafowil.widget.location',
+            'yafowil.widget.select2',
+            'yafowil.widget.slider',
+            'yafowil.widget.tiptap',
+        ]
     return rendered_resources(get_resources(widget_name).styles)
 
 
@@ -276,7 +322,8 @@ def app(environ, start_response):
             forms=forms,
             example_names=sorted(get_example_names()),
             sections=sections,
-            current_name=widget_name
+            current_name=widget_name,
+            theme=factory.theme
         )
         return Response(body=body)(environ, start_response)
     except Exception:
