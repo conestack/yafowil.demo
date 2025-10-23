@@ -16,3 +16,15 @@ body {
 footer p {
     margin:12px;
 }
+body > .navbar .navbar-header {
+    width: 100%;
+}
+.link-to-github {
+    float: right;
+    color: #a5c4df!important;
+    margin-top: 15px;
+}
+.link-to-github h5 {
+    margin: 0;
+    font-size: 16px;
+}

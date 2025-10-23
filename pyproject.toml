@@ -32,17 +32,17 @@ dependencies = [
     "yafowil.widget.ace",
     "yafowil.widget.array",
     "yafowil.widget.autocomplete",
-    "yafowil.widget.chosen",
+    # "yafowil.widget.chosen",
     "yafowil.widget.cron",
     "yafowil.widget.datetime",
     "yafowil.widget.dict",
     "yafowil.widget.image",
     "yafowil.widget.location",
-    "yafowil.widget.multiselect",
-    "yafowil.widget.richtext",
+    # "yafowil.widget.multiselect",
+    # "yafowil.widget.richtext",
     "yafowil.widget.select2",
     "yafowil.widget.slider",
-    "yafowil.widget.wysihtml5",
+    # "yafowil.widget.wysihtml5",
 ]
 
 [project.entry-points."yafowil.plugin"]
@@ -50,5 +50,6 @@ register = "yafowil.demo.loader:register"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/yafowil"]
+
 [tool.zest-releaser]
 create-wheel = true

@@ -9,7 +9,6 @@ from wsgiref.util import request_uri
 from yafowil.base import factory
 from yafowil.compat import IS_PY2
 from yafowil.controller import Controller
-from yafowil.resources import YafowilResources
 from yafowil.utils import get_example
 from yafowil.utils import get_example_names
 import docutils.core
@@ -18,8 +17,10 @@ import lxml.html
 import os
 import sys
 import traceback
+import webresource as wr
 import yafowil.loader  # noqa
 import yafowil.webob  # noqa
+import treibstoff # noqa
 
 
 curdir = os.path.dirname(__file__)
@@ -32,6 +33,7 @@ CTMAP = {
     '.gif': 'image/gif',
     '.jpg': 'image/jpeg',
     '.ico': 'image/x-icon',
+    '.svg': 'image/svg+xml',
 }
 
 
@@ -64,6 +66,7 @@ class DocTranslator(HTMLTranslator):
 
         def warner(msg):
             print('Warning: %s - %s ' % (msg, node.line))
+
         highlighted = self.highlighter.highlight_block(
             node.rawsource,
             lang,
@@ -89,58 +92,133 @@ class DocWriter(Writer):
 
 
 def pygments_styles(environ, start_response):
-    response = Response(content_type='text/css')
-    response.write(python_highlighter().get_stylesheet())
-    return response(environ, start_response)
+    theme = environ['QUERY_STRING'].split('=')[-1] if 'theme=' in environ['QUERY_STRING'] else 'light'
+    if theme == 'dark':
+        pygments_bridge = PygmentsBridge('html', 'material', False)
+    else:
+        pygments_bridge = PygmentsBridge('html', 'default', False)
+    response_body = pygments_bridge.get_stylesheet()
+
+    # Return CSS response
+    return Response(body=response_body, content_type='text/css')(environ, start_response)
+
+
+_file_cache = {}
 
 
 def resource_response(path, environ, start_response, content_type):
     response = Response(content_type=content_type)
-    with open(path, 'rb') as fd:
-        response.write(fd.read())
+    if path not in _file_cache:
+        with open(path, 'rb') as fd:
+            _file_cache[path] = fd.read()
+    response.write(_file_cache[path])
     return response(environ, start_response)
 
 
-class Resources(YafowilResources):
-
-    def configure_resource_directory(self, plugin_name, resourc_edir):
-        return '/++resource++%s' % plugin_name
-
-
-resources = Resources()
+group_map = {}
+directory_map = {}
+resources_loaded = False
 
 
-def get_resources(current_plugin_name=None):
-    ret = dict(js=list(), css=list())
-    for js in resources.js_resources:
-        ret['js'].append(js)
-    for css in resources.css_resources:
-        ret['css'].append(css)
-    return ret
+def load_resources():
+    global resources_loaded
+    if resources_loaded:
+        return
+    resources = factory.get_resources()
+    for group in resources.members:
+        group_map[group.name] = group
+        directory_map['++resource++{}'.format(group.path)] = group.directory
+    for script in resources.scripts:
+        script.path = '++resource++{}'.format(script.path)
+    for style in resources.styles:
+        style.path = '++resource++{}'.format(style.path)
+    resources_loaded = True
+
+
+def get_resources(widget_name=None):
+    load_resources()
+    group = wr.ResourceGroup()
+    group.add(group_map['treibstoff'])
+    group.add(group_map['yafowil.demo'])
+    group.add(group_map['yafowil.bootstrap'])
+    if isinstance(widget_name, list):
+        for name in widget_name:
+            if name not in [None, 'yafowil']:
+                group.add(group_map[name])
+    else:
+        if widget_name not in [None, 'yafowil']:
+            group.add(group_map[widget_name])
+    return group
+
+
+def rendered_resources(resources):
+    resolver = wr.ResourceResolver(resources)
+    renderer = wr.ResourceRenderer(resolver, base_url='')
+    return renderer.render()
+
+
+def rendered_scripts(widget_name=None):
+    # provide resources for use of other widgets in yafowil.widget.array
+    if widget_name == 'yafowil.widget.array':
+        widget_name = [
+            'yafowil.widget.ace',
+            'yafowil.widget.array',
+            'yafowil.widget.autocomplete',
+            'yafowil.widget.color',
+            'yafowil.widget.cron',
+            'yafowil.widget.datetime',
+            'yafowil.widget.dict',
+            'yafowil.widget.image',
+            'yafowil.widget.location',
+            'yafowil.widget.select2',
+            'yafowil.widget.slider',
+            'yafowil.widget.tiptap',
+        ]
+    return rendered_resources(get_resources(widget_name).scripts)
+
+
+def rendered_styles(widget_name=None):
+    # provide resources for use of other widgets in yafowil.widget.array
+    if widget_name == 'yafowil.widget.array':
+        widget_name = [
+            'yafowil.widget.ace',
+            'yafowil.widget.array',
+            'yafowil.widget.autocomplete',
+            'yafowil.widget.color',
+            'yafowil.widget.cron',
+            'yafowil.widget.datetime',
+            'yafowil.widget.dict',
+            'yafowil.widget.image',
+            'yafowil.widget.location',
+            'yafowil.widget.select2',
+            'yafowil.widget.slider',
+            'yafowil.widget.tiptap',
+        ]
+    return rendered_resources(get_resources(widget_name).styles)
 
 
 def dispatch_resource(path, environ, start_response):
-    plugin_name = path.split('/')[0][12:]
-    resources = factory.resources_for(plugin_name)
-    filepath = os.path.join(resources['resourcedir'], *path.split('/')[1:])
+    base_path = path.split('/')[0]
+    rel_path = os.path.join(*path.split('/')[1:])
+    file_path = os.path.join(directory_map[base_path], rel_path)
     ct = 'text/plain'
     for key in CTMAP:
         if path.endswith(key):
             ct = CTMAP[key]
             break
-    return resource_response(filepath, environ, start_response, ct)
+    return resource_response(file_path, environ, start_response, ct)
 
 
 def dummy_save(widget, data):
     print(data.extracted)
 
 
-def render_forms(example, environ, plugin_name):
+def render_forms(example, environ, widget_name):
     result = []
     for part in example:
         record = {}
         widget = part['widget']
-        action = '/++widget++%s/index.html#%s' % (plugin_name, widget.name)
+        action = '/++widget++%s/index.html#%s' % (widget_name, widget.name)
         form = factory(
             u'#form',
             name=widget.name,
@@ -206,17 +284,18 @@ def app(environ, start_response):
     try:
         path = environ['PATH_INFO'].strip('/')
         if path == 'favicon.ico':
-            return dispatch_resource('++resource++yafowil.demo/favicon.ico',
-                                     environ, start_response)
+            return dispatch_resource(
+                '++resource++yafowil-demo/favicon.ico',
+                environ, start_response
+            )
         if path == 'pygments.css':
             return pygments_styles(environ, start_response)
         if path.startswith('++resource++'):
             return dispatch_resource(path, environ, start_response)
         if path.startswith('++widget++'):
             splitted = path.split('/')
-            plugin_name = splitted[0][10:]
-            resources = get_resources(plugin_name)
-            example = get_example(plugin_name)
+            widget_name = splitted[0][10:]
+            example = get_example(widget_name)
             if splitted[1] != 'index.html':
                 return execute_route(
                     example,
@@ -230,21 +309,22 @@ def app(environ, start_response):
                     'id': section['widget'].name,
                     'title': section.get('title', section['widget'].name),
                 })
-            forms = render_forms(example, environ, plugin_name)
+            forms = render_forms(example, environ, widget_name)
         else:
-            plugin_name = None
-            resources = get_resources()
+            widget_name = None
             sections = list()
             forms = None
         templates = PageTemplateLoader(curdir)
         template = templates['main.pt']
         body = template(
-            resources=resources,
+            scripts=rendered_scripts(widget_name),
+            styles=rendered_styles(widget_name),
             forms=forms,
             example_names=sorted(get_example_names()),
             sections=sections,
-            current_name=plugin_name
+            current_name=widget_name,
+            theme=factory.theme
         )
         return Response(body=body)(environ, start_response)
-    except:
+    except Exception:
         return Response(body=format_traceback())(environ, start_response)
