@@ -33,7 +33,7 @@ setup(
         'sphinx',
         'Chameleon',
         'docutils',
-        'yafowil',
+        'yafowil<4.0.0',
         'yafowil.webob',
         'yafowil.yaml',
         'yafowil.bootstrap',
