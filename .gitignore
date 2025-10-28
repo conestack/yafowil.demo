@@ -10,6 +10,8 @@
 /buildout.cfg
 /bin/
 /devsrc/
+/sources/
+/.mxmake/
 /eggs/
 /parts/
 /env/

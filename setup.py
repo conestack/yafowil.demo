@@ -46,7 +46,7 @@ setup(
         'yafowil.widget.cron',
         'yafowil.widget.datetime',
         'yafowil.widget.dict',
-        # 'yafowil.widget.dynatree',
+        'yafowil.widget.dynatree',
         'yafowil.widget.image',
         'yafowil.widget.location',
         'yafowil.widget.multiselect',
