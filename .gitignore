@@ -26,3 +26,4 @@
 /coverage/
 /lib64
 /pyvenv.cfg
+/.venv/

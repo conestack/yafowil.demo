@@ -58,7 +58,7 @@ PYTHON_MIN_VERSION?=3.9
 # virtual environment or using `PRIMARY_PYTHON`, depending on the
 # `VENV_ENABLED` setting.
 # Default: pip
-PYTHON_PACKAGE_INSTALLER?=uv
+PYTHON_PACKAGE_INSTALLER?=pip
 
 # Python version for UV to install/use when creating virtual
 # environments with global UV. Passed to `uv venv -p VALUE`. Supports version
