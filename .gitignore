@@ -1,14 +1,16 @@
+__pycache__
 *.egg-info
 *.pyc
+/.coverage
 /.mxmake/
 /.venv/
 /.vscode/
 /bin/
 /build/
+/constraints-mxdev.txt
 /coverage/
 /dist/
 /pip-selfcheck.json
 /pyvenv.cfg
 /requirements-mxdev.txt
 /sources/
-__pycache__
