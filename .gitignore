@@ -3,7 +3,7 @@ __pycache__
 *.pyc
 /.coverage
 /.mxmake/
-/.venv/
+/venv/
 /.vscode/
 /bin/
 /build/

@@ -58,6 +58,17 @@ path = "README.rst"
 [[tool.hatch.metadata.hooks.fancy-pypi-readme.fragments]]
 path = "LICENSE.rst"
 
+[tool.hatch.build.targets.sdist]
+exclude = [
+    "/.github/",
+    "/Makefile",
+    "/mx.ini",
+    "htmlcov/",
+    "include.mk",
+    "localhost.cfg",
+    "requirements.txt",
+]
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/yafowil"]
 
