@@ -1,8 +1,0 @@
-#!/bin/bash
-
-export recaptcha_private_key=${:recaptcha_private_key}
-export recaptcha_public_key=${:recaptcha_public_key}
-
-# For development and live reloading on code changes, start this script like
-# ``./run.sh --reload``.
-./bin/gunicorn yafowil.demo:app -t 3600 -b ${:bind_host}:${:bind_port} "$@"
