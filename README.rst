@@ -3,20 +3,34 @@ yafowil.demo
 
 Demo Application for YAFOWIL.
 
+
 Installation
 ------------
 
-Create ``buildout.cfg`` containing::
+::
 
-    [buildout]
-    extends = dev.cfg
+    pip install gunicorn yafowil.demo
 
-    [run]
-    recaptcha_private_key = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    recaptcha_public_key = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-Run buildout and start application with generated ``run.sh`` script::
+Running
+-------
 
-    ./run.sh
+::
 
-Connect your browser to ``http://localhost:8000/``
+    gunicorn yafowil.demo:app -t 3600 -b 127.0.0.1:8080
+
+Browse localhost:8080
+
+Try bootstrap 3 theme (bootstrap 5 is default)::
+
+    export YAFOWIL_THEME=bootstrap3
+    gunicorn yafowil.demo:app -t 3600 -b 127.0.0.1:8080
+
+
+Development
+-----------
+
+Build docker container::
+
+    make install
+    docker compose build
