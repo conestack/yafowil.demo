@@ -48,8 +48,8 @@ bs5_resources = wr.ResourceGroup(
 )
 bs5_resources.add(wr.ScriptResource(
     name='jquery-js',
-    resource='jquery.js',
-    compressed='jquery.min.js'
+    resource='jquery-4.0.0.js',
+    compressed='jquery-4.0.0.min.js'
 ))
 bs5_resources.add(wr.ScriptResource(
     name='yafowil-demo-js',
