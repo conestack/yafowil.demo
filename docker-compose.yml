@@ -1,8 +1,14 @@
 services:
+
   yafowil-demo:
     build: .
+
     ports:
       - "8080:8080"
+
     environment:
+      # - YAFOWIL_THEME=bootstrap3
       - YAFOWIL_THEME=bootstrap5
-    command: ["tail", "-f", "/dev/null"]
+
+    # blocking command for container inspection if starting app fails
+    # command: ["tail", "-f", "/dev/null"]
