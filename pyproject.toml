@@ -44,10 +44,12 @@ dependencies = [
     "yafowil.widget.select2>1.99",
     "yafowil.widget.slider>1.99",
     # "yafowil.widget.wysihtml5",
+    "yafowil.widget.tiptap>1.99",
 ]
 
 [project.entry-points."yafowil.plugin"]
 register = "yafowil.demo.loader:register"
+configure = "yafowil.demo.loader:configure"
 
 [tool.hatch.metadata.hooks.fancy-pypi-readme]
 content-type = "text/x-rst"

@@ -79,4 +79,5 @@ def register():
 ##############################################################################
 
 def configure():
-    bootstrap.configure_factory('bootstrap5')
+    theme = os.environ.get('YAFOWIL_THEME', 'bootstrap5')
+    bootstrap.configure_factory(theme)
