@@ -1,0 +1,8 @@
+services:
+  yafowil-demo:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - YAFOWIL_THEME=bootstrap5
+    command: ["tail", "-f", "/dev/null"]

@@ -5,7 +5,6 @@ __pycache__
 /.mxmake/
 /venv/
 /.vscode/
-/bin/
 /build/
 /constraints-mxdev.txt
 /coverage/
