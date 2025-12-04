@@ -27,14 +27,6 @@ resources.add(wr.StyleResource(
     name='yafowil-demo-css',
     resource='yafowil.demo.css'
 ))
-resources.add(wr.StyleResource(
-    name='bootstrap-icons-css',
-    resource='bootstrap-icons.css'
-))
-resources.add(wr.StyleResource(
-    name='bootstrap-icons',
-    resource='bootstrap-icons.woff'
-))
 ts_resources = treibstoff.resources.copy()
 
 ##############################################################################
