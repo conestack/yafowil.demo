@@ -7,7 +7,6 @@ from webob import Request
 from webob import Response
 from wsgiref.util import request_uri
 from yafowil.base import factory
-from yafowil.compat import IS_PY2
 from yafowil.controller import Controller
 from yafowil.utils import get_example
 from yafowil.utils import get_example_names
@@ -46,7 +45,7 @@ class DocTranslator(HTMLTranslator):
     def __init__(self, *args, **kwds):
         HTMLTranslator.__init__(self, *args, **kwds)
         self.highlightlang = 'python'
-        self.highlightlinenothreshold = sys.maxint if IS_PY2 else sys.maxsize
+        self.highlightlinenothreshold = sys.maxsize
         self.highlighter = python_highlighter()
 
     def visit_literal_block(self, node):
