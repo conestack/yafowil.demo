@@ -16,10 +16,10 @@ import lxml.html
 import os
 import sys
 import traceback
+import treibstoff  # noqa
 import webresource as wr
 import yafowil.loader  # noqa
 import yafowil.webob  # noqa
-import treibstoff # noqa
 
 
 curdir = os.path.dirname(__file__)
@@ -41,7 +41,6 @@ def python_highlighter():
 
 
 class DocTranslator(HTMLTranslator):
-
     def __init__(self, *args, **kwds):
         HTMLTranslator.__init__(self, *args, **kwds)
         self.highlightlang = 'python'
@@ -53,8 +52,7 @@ class DocTranslator(HTMLTranslator):
             # most probably a parsed-literal block -- don't highlight
             return HTMLTranslator.visit_literal_block(self, node)
         lang = self.highlightlang
-        linenos = node.rawsource.count('\n') >= \
-            self.highlightlinenothreshold - 1
+        linenos = node.rawsource.count('\n') >= self.highlightlinenothreshold - 1
         highlight_args = node.get('highlight_args', {})
         if 'language' in node:
             # code-block directives
@@ -67,31 +65,25 @@ class DocTranslator(HTMLTranslator):
             print('Warning: %s - %s ' % (msg, node.line))
 
         highlighted = self.highlighter.highlight_block(
-            node.rawsource,
-            lang,
-            warn=warner,
-            linenos=linenos,
-            **highlight_args
+            node.rawsource, lang, warn=warner, linenos=linenos, **highlight_args
         )
-        starttag = self.starttag(
-            node,
-            'div',
-            suffix='',
-            CLASS='highlight-%s' % lang
-        )
+        starttag = self.starttag(node, 'div', suffix='', CLASS='highlight-%s' % lang)
         self.body.append(starttag + highlighted + '</div>\n')
         raise nodes.SkipNode
 
 
 class DocWriter(Writer):
-
     def __init__(self):
         Writer.__init__(self)
         self.translator_class = DocTranslator
 
 
 def pygments_styles(environ, start_response):
-    theme = environ['QUERY_STRING'].split('=')[-1] if 'theme=' in environ['QUERY_STRING'] else 'light'
+    theme = (
+        environ['QUERY_STRING'].split('=')[-1]
+        if 'theme=' in environ['QUERY_STRING']
+        else 'light'
+    )
     if theme == 'dark':
         pygments_bridge = PygmentsBridge('html', 'material', False)
     else:
@@ -126,11 +118,11 @@ def load_resources():
     resources = factory.get_resources()
     for group in resources.members:
         group_map[group.name] = group
-        directory_map['++resource++{}'.format(group.path)] = group.directory
+        directory_map[f'++resource++{group.path}'] = group.directory
     for script in resources.scripts:
-        script.path = '++resource++{}'.format(script.path)
+        script.path = f'++resource++{script.path}'
     for style in resources.styles:
-        style.path = '++resource++{}'.format(style.path)
+        style.path = f'++resource++{style.path}'
     resources_loaded = True
 
 
@@ -218,19 +210,15 @@ def render_forms(example, environ, widget_name):
         record = {}
         widget = part['widget']
         action = '/++widget++%s/index.html#%s' % (widget_name, widget.name)
-        form = factory(
-            u'#form',
-            name=widget.name,
-            props={
-                'action': action
-            })
+        form = factory('#form', name=widget.name, props={'action': action})
         form[widget.name] = widget
         form['form_actions'] = factory(
             'div',
             props={
                 'class': 'form-actions',
                 'structural': True,
-            })
+            },
+        )
         handler = part.get('handler', dummy_save)
         form['form_actions']['submit'] = factory(
             'field:div:#button',
@@ -239,17 +227,15 @@ def render_forms(example, environ, widget_name):
                 'action': 'save',
                 'div.class_add': 'col-sm-offset-2 col-sm-10',
                 'handler': handler,
-                'next': lambda req: True
-            })
+                'next': lambda req: True,
+            },
+        )
         controller = Controller(form, Request(environ))
         if controller.next:
             record['form'] = form()
         else:
             record['form'] = controller.rendered
-        doc_html = docutils.core.publish_string(
-            part['doc'],
-            writer=DocWriter()
-        )
+        doc_html = docutils.core.publish_string(part['doc'], writer=DocWriter())
         doc_html = lxml.html.document_fromstring(doc_html)
         doc_html = doc_html.find_class('document')[0]
         doc_html.insert(0, lxml.etree.Element('a', name=widget.name))
@@ -265,9 +251,7 @@ def execute_route(example, route, environ, start_response):
             result = part['routes'][route](url)
             # XXX todo: set headers generic
             response = Response(
-                content_type='application/json',
-                body=result['body'],
-                charset='UTF-8'
+                content_type='application/json', body=result['body'], charset='UTF-8'
             )
             return response(environ, start_response)
     raise ValueError('No route to: %s' % environ['PATH_INFO'])
@@ -284,8 +268,7 @@ def app(environ, start_response):
         path = environ['PATH_INFO'].strip('/')
         if path == 'favicon.ico':
             return dispatch_resource(
-                '++resource++yafowil-demo/favicon.ico',
-                environ, start_response
+                '++resource++yafowil-demo/favicon.ico', environ, start_response
             )
         if path == 'pygments.css':
             return pygments_styles(environ, start_response)
@@ -296,18 +279,15 @@ def app(environ, start_response):
             widget_name = splitted[0][10:]
             example = get_example(widget_name)
             if splitted[1] != 'index.html':
-                return execute_route(
-                    example,
-                    splitted[1],
-                    environ,
-                    start_response
-                )
+                return execute_route(example, splitted[1], environ, start_response)
             sections = list()
             for section in example:
-                sections.append({
-                    'id': section['widget'].name,
-                    'title': section.get('title', section['widget'].name),
-                })
+                sections.append(
+                    {
+                        'id': section['widget'].name,
+                        'title': section.get('title', section['widget'].name),
+                    }
+                )
             forms = render_forms(example, environ, widget_name)
         else:
             widget_name = None
@@ -322,7 +302,7 @@ def app(environ, start_response):
             example_names=sorted(get_example_names()),
             sections=sections,
             current_name=widget_name,
-            theme=factory.theme
+            theme=factory.theme,
         )
         return Response(body=body)(environ, start_response)
     except Exception:

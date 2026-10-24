@@ -2,8 +2,8 @@ from yafowil import bootstrap
 from yafowil.base import factory
 from yafowil.utils import entry_point
 import os
-import webresource as wr
 import treibstoff
+import webresource as wr
 
 
 resources_dir = os.path.join(os.path.dirname(__file__), 'resources')
@@ -14,19 +14,14 @@ resources_dir = os.path.join(os.path.dirname(__file__), 'resources')
 ##############################################################################
 
 resources = wr.ResourceGroup(
-    name='yafowil.demo',
-    directory=resources_dir,
-    path='yafowil-demo'
+    name='yafowil.demo', directory=resources_dir, path='yafowil-demo'
 )
-resources.add(wr.ScriptResource(
-    name='jquery-js',
-    resource='jquery-3.6.0.js',
-    compressed='jquery-3.6.0.min.js'
-))
-resources.add(wr.StyleResource(
-    name='yafowil-demo-css',
-    resource='yafowil.demo.css'
-))
+resources.add(
+    wr.ScriptResource(
+        name='jquery-js', resource='jquery-3.6.0.js', compressed='jquery-3.6.0.min.js'
+    )
+)
+resources.add(wr.StyleResource(name='yafowil-demo-css', resource='yafowil.demo.css'))
 ts_resources = treibstoff.resources.copy()
 
 ##############################################################################
@@ -34,28 +29,23 @@ ts_resources = treibstoff.resources.copy()
 ##############################################################################
 
 bs5_resources = wr.ResourceGroup(
-    name='yafowil.demo',
-    directory=resources_dir,
-    path='yafowil-demo'
+    name='yafowil.demo', directory=resources_dir, path='yafowil-demo'
 )
-bs5_resources.add(wr.ScriptResource(
-    name='jquery-js',
-    resource='jquery-4.0.0.js',
-    compressed='jquery-4.0.0.min.js'
-))
-bs5_resources.add(wr.ScriptResource(
-    name='yafowil-demo-js',
-    resource='yafowil.demo.js'
-))
-bs5_resources.add(wr.StyleResource(
-    name='yafowil-demo-css',
-    resource='yafowil.demo.bs5.css'
-))
+bs5_resources.add(
+    wr.ScriptResource(
+        name='jquery-js', resource='jquery-4.0.0.js', compressed='jquery-4.0.0.min.js'
+    )
+)
+bs5_resources.add(wr.ScriptResource(name='yafowil-demo-js', resource='yafowil.demo.js'))
+bs5_resources.add(
+    wr.StyleResource(name='yafowil-demo-css', resource='yafowil.demo.bs5.css')
+)
 
 
 ##############################################################################
 # Registration
 ##############################################################################
+
 
 @entry_point(order=10)
 def register():
@@ -69,6 +59,7 @@ def register():
 ##############################################################################
 # Configuration
 ##############################################################################
+
 
 def configure():
     theme = os.environ.get('YAFOWIL_THEME', 'bootstrap5')
